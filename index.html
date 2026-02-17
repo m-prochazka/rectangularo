@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>RECTANGULARO — SaaS Empire v3</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══ TOPBAR ══════════════════════════════════════════════════ -->
+<div id="topbar">
+  <div id="logo-icon">▣</div>
+  <div style="margin-right:calc(12px*var(--s))">
+    <div id="logo-text">RECTANGULARO</div>
+    <div id="logo-sub">THE SAAS EMPIRE v3.0</div>
+  </div>
+  <div id="tb-search">🔍 Search documents, customers, features...</div>
+  <div id="tb-res">
+    <div class="tc">
+      <span class="tc-i">💰</span>
+      <div><span class="tc-v" id="t-cash">€5K</span><span class="tc-l">CASH</span></div>
+    </div>
+    <div class="tc">
+      <span class="tc-i">📈</span>
+      <div><span class="tc-v" id="t-mrr">€0</span><span class="tc-l">MRR</span></div>
+    </div>
+    <div class="tc drain">
+      <span class="tc-i">📉</span>
+      <div><span class="tc-v" id="t-burn">€0</span><span class="tc-l">BURN/mo</span></div>
+    </div>
+    <div class="tc">
+      <span class="tc-i">⭐</span>
+      <div><span class="tc-v" id="t-rep">50</span><span class="tc-l">REP</span></div>
+    </div>
+    <div class="tc">
+      <span class="tc-i">🧠</span>
+      <div><span class="tc-v" id="t-mor">100</span><span class="tc-l">MORALE</span></div>
+    </div>
+    <div class="tc">
+      <span class="tc-i">🐛</span>
+      <div><span class="tc-v" id="t-dbt">0</span><span class="tc-l">TECH DEBT</span></div>
+    </div>
+  </div>
+  <button id="pause-btn" class="btn ye" onclick="togglePause()" style="margin-right:calc(8px*var(--s))">⏸️ PAUSE</button>
+  <div id="tb-notif" onclick="sv('inbox')">
+    🔔<span id="tb-notif-n">0</span>
+  </div>
+  <div id="tb-admin" onclick="sv('admin')">
+    <div class="adm-av">👤</div>
+    <div>
+      <div class="adm-nm">Administrator</div>
+      <div class="adm-em">admin@rectangularo.com</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LAYOUT ══════════════════════════════════════════════════ -->
+<div id="layout">
+
+<!-- ── SIDEBAR ── -->
+<div id="sidebar">
+  <div style="padding:calc(7px*var(--s)) calc(11px*var(--s));border-bottom:1px solid var(--bo)">
+    <button class="btn pu full" onclick="sv('home')" style="padding:calc(7px*var(--s))">✦ NEW DOCUMENT</button>
+  </div>
+
+  <div class="sb-sec">NAVIGATION</div>
+  <div class="si act" id="n-home"      onclick="sv('home')">      <span class="si-ic">🏠</span>Home</div>
+  <div class="si"     id="n-documents" onclick="sv('documents')">  <span class="si-ic">📄</span>Documents<span class="si-badge g" id="bd-docs">0</span></div>
+  <div class="si"     id="n-customers" onclick="sv('customers')">  <span class="si-ic">👥</span>Customers<span class="si-badge" id="bd-custs" style="display:none">0</span></div>
+  <div class="si"     id="n-inbox"     onclick="sv('inbox')">      <span class="si-ic">📬</span>Inbox<span class="si-badge r" id="bd-tix" style="display:none">0</span></div>
+
+  <div class="sdiv"></div>
+  <div class="sb-sec">MANAGEMENT</div>
+  <div class="si" id="n-teams"     onclick="sv('teams')">      <span class="si-ic">🏢</span>Teams</div>
+  <div class="si" id="n-features"  onclick="sv('features')">   <span class="si-ic">⚙️</span>Dev Backlog</div>
+  <div class="si" id="n-addons"    onclick="sv('addons')">     <span class="si-ic">🧩</span>Addon Store</div>
+  <div class="si" id="n-upgrades"  onclick="sv('upgrades')">   <span class="si-ic">⬆️</span>Upgrades</div>
+  <div class="si" id="n-requests"  onclick="sv('requests')">   <span class="si-ic">💡</span>Feat. Req.<span class="si-badge" id="bd-reqs" style="display:none">0</span></div>
+  <div class="si" id="n-marketing" onclick="sv('marketing')">  <span class="si-ic">📣</span>Marketing</div>
+  <div class="si" id="n-regions"   onclick="sv('regions')">    <span class="si-ic">🌍</span>Data Regions</div>
+
+  <div class="sdiv"></div>
+  <div class="sb-sec">ADMIN</div>
+  <div class="si" id="n-leadership" onclick="sv('leadership')"><span class="si-ic">👔</span>Leadership</div>
+  <div class="si" id="n-reports"    onclick="sv('reports')">   <span class="si-ic">📊</span>Reports</div>
+  <div class="si" id="n-admin"      onclick="sv('admin')">     <span class="si-ic">🔧</span>Admin Panel</div>
+
+  <div class="sdiv"></div>
+  <div class="sb-sec">FOLDERS</div>
+  <div class="si" onclick="sv('home')"><span class="si-ic">⭐</span>Starred<span class="si-badge g">2</span></div>
+  <div class="si" onclick="sv('home')"><span class="si-ic">🕐</span>Recent</div>
+  <div class="si" onclick="sv('home')"><span class="si-ic">🔗</span>Shared</div>
+  <div class="si" onclick="sv('home')"><span class="si-ic">🗑️</span>Trash</div>
+
+  <div id="sb-bottom">
+    <div class="ctrl-row">
+      <span class="ctrl-lbl">SPEED:</span>
+      <button class="ctrlbtn"     onclick="setSpd(0.5)">½x</button>
+      <button class="ctrlbtn act" id="spd-1" onclick="setSpd(1)">1x</button>
+      <button class="ctrlbtn"     id="spd-2" onclick="setSpd(2)">2x</button>
+      <button class="ctrlbtn"     id="spd-5" onclick="setSpd(5)">5x</button>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-lbl">SIZE:</span>
+      <button class="ctrlbtn"     onclick="setScale(1.0)"  id="sc-s">S</button>
+      <button class="ctrlbtn"     onclick="setScale(1.25)" id="sc-m">M</button>
+      <button class="ctrlbtn act" onclick="setScale(1.5)"  id="sc-l">L</button>
+      <button class="ctrlbtn"     onclick="setScale(1.75)" id="sc-xl">XL</button>
+      <button class="ctrlbtn"     onclick="setScale(2.0)"  id="sc-xx">2X</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONTENT ── -->
+<div id="content">
+
+  <!-- HOME -->
+  <div id="v-home" class="view act">
+    <div id="act-row">
+      <div class="ac" onclick="doSign('now')">
+        <div class="ac-ic">✍️</div>
+        <div class="ac-t">SIGN NOW</div>
+        <div class="ac-d">Fill out forms and add your digital signature.</div>
+      </div>
+      <div class="ac" onclick="doSign('we')">
+        <div class="ac-ic">🤝</div>
+        <div class="ac-t">WE SIGN</div>
+        <div class="ac-d">Sign together with multiple parties in real time.</div>
+      </div>
+      <div class="ac" onclick="doSign('they')">
+        <div class="ac-ic">📨</div>
+        <div class="ac-t">THEY SIGN</div>
+        <div class="ac-d">Prepare document and request others to sign.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct ct-end">
+        <span>📊 Overview</span>
+        <span style="font-size:var(--fxs);color:var(--pg);cursor:pointer" onclick="sv('reports')">Full report ›</span>
+      </div>
+      <div class="ov-grid">
+        <div class="sb-stat"><div class="sl">INBOX</div><div class="sv or" id="ov-inbox">0</div></div>
+        <div class="sb-stat"><div class="sl">WAITING</div><div class="sv bl" id="ov-wait">0</div></div>
+        <div class="sb-stat"><div class="sl">COMPLETED</div><div class="sv gr" id="ov-done">0</div></div>
+        <div class="sb-stat"><div class="sl">URGENT</div><div class="sv re" id="ov-urg">0</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">🏢 Your Team</div>
+      <div class="char-row" id="char-row"></div>
+    </div>
+    <div class="card">
+      <div class="ct ct-end">
+        <span>🕐 Recent Activity</span>
+        <span style="font-size:var(--fxs);color:var(--tm)">Live feed</span>
+      </div>
+      <div id="act-log"></div>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS -->
+  <div id="v-documents" class="view">
+    <div class="card">
+      <div class="ct">📄 Documents</div>
+      <div class="ov-grid" style="margin-bottom:calc(10px*var(--s))">
+        <div class="sb-stat"><div class="sl">PROCESSED</div><div class="sv gr" id="doc-proc">0</div></div>
+        <div class="sb-stat"><div class="sl">DEPLOYMENTS</div><div class="sv bl" id="doc-dep">0</div></div>
+        <div class="sb-stat"><div class="sl">FEATURES</div><div class="sv ye" id="doc-feat">0</div></div>
+        <div class="sb-stat"><div class="sl">ADDONS SOLD</div><div class="sv te" id="doc-add">0</div></div>
+      </div>
+      <div style="font-family:var(--mo);font-size:var(--fmn);color:var(--tm);line-height:1.8">
+        All signed documents and transactions are handled by Atom Kociáš's Delivery team.<br>
+        Michael Heelson handles on-site delivery engineering and enterprise solutions.<br>
+        <span style="color:var(--pg)">Tip: Ship features to unlock more document types and higher transaction volumes.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMERS -->
+  <div id="v-customers" class="view">
+    <div class="card">
+      <div class="ct ct-end">
+        <span>👥 Customers — <span id="c-tot" style="color:var(--ye)">0</span></span>
+        <span style="font-size:var(--fxs);color:var(--tm)">MRR: <span id="c-mrr" style="color:var(--gr)">€0</span></span>
+      </div>
+      <div id="cust-list"></div>
+    </div>
+  </div>
+
+  <!-- INBOX -->
+  <div id="v-inbox" class="view">
+    <div class="card">
+      <div class="ct">📬 Support Inbox — <span id="ix-open" style="color:var(--or)">0</span> open</div>
+      <div id="inbox-list"></div>
+    </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div id="v-teams" class="view">
+    <div class="card">
+      <div class="ct">🏢 Department Management</div>
+      <div id="teams-content"></div>
+    </div>
+  </div>
+
+  <!-- DEV BACKLOG -->
+  <div id="v-features" class="view">
+    <div class="card">
+      <div class="ct">⚙️ Dev Backlog — Dave Rocky McHill</div>
+      <div class="sech">▸ IN PROGRESS / QUEUED</div>
+      <div id="feat-q"></div>
+      <div class="sech">▸ SHIPPED ✓</div>
+      <div id="feat-d"></div>
+    </div>
+  </div>
+
+  <!-- ADDON STORE -->
+  <div id="v-addons" class="view">
+    <div class="card">
+      <div class="ct">🧩 Add-on Store</div>
+      <div id="addon-list"></div>
+    </div>
+  </div>
+
+  <!-- UPGRADES -->
+  <div id="v-upgrades" class="view">
+    <div class="card">
+      <div class="ct">⬆️ Company Upgrades</div>
+      <div id="upgr-list"></div>
+    </div>
+  </div>
+
+  <!-- FEATURE REQUESTS -->
+  <div id="v-requests" class="view">
+    <div class="card">
+      <div class="ct">💡 Feature Requests — Barb Wackley</div>
+      <div id="req-list"></div>
+    </div>
+  </div>
+
+  <!-- MARKETING -->
+  <div id="v-marketing" class="view">
+    <div class="card">
+      <div class="ct">📣 Marketing — Luke Oktoberfest &amp; Sharky Simpson</div>
+      <div id="mkt-content"></div>
+    </div>
+  </div>
+
+  <!-- REGIONS -->
+  <div id="v-regions" class="view">
+    <div class="card">
+      <div class="ct">🌍 Production Server Regions — David Hiswoman</div>
+      <div style="font-family:var(--mo);font-size:var(--fmn);color:var(--tm);margin-bottom:calc(9px*var(--s));line-height:1.6">
+        Expand into new markets. Each region multiplies MRR and boosts customer acquisition.<br>
+        David Hiswoman's DevOps team handles all regional infrastructure and deployments.<br>
+        Regional servers cost <span style="color:var(--or)">€300/month</span> each in operational burn.
+      </div>
+      <div id="reg-content"></div>
+    </div>
+  </div>
+
+  <!-- LEADERSHIP -->
+  <div id="v-leadership" class="view">
+    <div class="card">
+      <div class="ct">👔 Leadership &amp; Key People</div>
+      <div id="lead-content"></div>
+    </div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="v-reports" class="view">
+    <div class="card">
+      <div class="ct">📊 Company Reports &amp; P&amp;L</div>
+      <div id="rep-content"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="v-admin" class="view">
+    <div class="card">
+      <div class="ct">🔧 Admin Panel</div>
+      <div id="adm-content"></div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- ── RIGHT PANEL ── -->
+<div id="rp">
+  <div id="rp-tabs">
+    <div class="rpt act" onclick="setRPTab('tix')">🎫 TICKETS</div>
+    <div class="rpt"     onclick="setRPTab('req')">💡 REQUESTS</div>
+    <div class="rpt"     onclick="setRPTab('pipe')">💼 PIPELINE</div>
+  </div>
+  <div id="rp-body">
+    <div class="rpc act" id="rp-tix"></div>
+    <div class="rpc"     id="rp-req"></div>
+    <div class="rpc"     id="rp-pipe"></div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<!-- ══ TICKER ══════════════════════════════════════════════════ -->
+<div id="ticker"><span id="ticker-inner"></span></div>
+
+<!-- ══ TOASTS ══════════════════════════════════════════════════ -->
+<div id="toasts"></div>
+
+<!-- ══ P&L MODAL ═══════════════════════════════════════════════ -->
+<div id="pl-modal">
+  <div class="pl-box">
+    <div class="pl-title">📅 MONTH END — P&amp;L SUMMARY</div>
+    <div id="pl-rows"></div>
+    <div style="text-align:right;margin-top:calc(10px*var(--s))">
+      <button class="btn gr" onclick="closePL()">CLOSE BOOKS ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EVENT MODAL ══════════════════════════════════════════════ -->
+<div id="ev-modal">
+  <div class="ev-box">
+    <div class="ev-src">
+      <div class="ev-av" id="ev-av">👔</div>
+      <div>
+        <div class="ev-nm" id="ev-nm">Character</div>
+        <div class="ev-rl" id="ev-rl">Role</div>
+      </div>
+      <div class="ev-bg" id="ev-bg">📣 EVENT</div>
+    </div>
+    <div class="ev-ti" id="ev-ti"></div>
+    <div class="ev-de" id="ev-de"></div>
+    <div class="ev-ch" id="ev-ch"></div>
+  </div>
+</div>
+
+<!-- ══ WIN SCREEN ═══════════════════════════════════════════════ -->
+<div id="win-screen">
+  <div class="win-title">🏆 RECTANGULARO WINS! 🏆</div>
+  <div style="font-size:var(--fsm);color:var(--pg);margin-top:calc(4px*var(--s))">
+    ALL FEATURES SHIPPED · ALL REGIONS LIVE · 15+ CUSTOMERS
+  </div>
+  <div style="font-family:var(--mo);font-size:var(--fmn);color:var(--td);margin-top:calc(8px*var(--s))" id="win-stats"></div>
+  <div style="font-size:var(--fxs);color:var(--tm);margin-top:calc(4px*var(--s))">
+    Joe Newman: "I always believed in us. This was MY idea from the start."
+  </div>
+  <div style="font-size:var(--fxs);color:var(--tm)">
+    Terry Stroll: "Congratulations! Also I approved everyone's holiday. I'm not HR."
+  </div>
+  <div style="font-size:var(--fxs);color:var(--tm)">
+    Atom Kociáš: "I deployed something on a fridge. It still runs."
+  </div>
+  <button class="btn pu" onclick="document.getElementById('win-screen').classList.remove('show')"
+    style="margin-top:calc(14px*var(--s))">KEEP GROWING ›</button>
+</div>
+
+<!-- ══ SCRIPTS ══════════════════════════════════════════════════ -->
+<!-- Load events first so ALL_EVENTS is available to game.js -->
+<script src="events.js"></script>
+<script src="game.js"></script>
+
+</body>
+</html>
