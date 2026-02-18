@@ -86,8 +86,13 @@ const CNAMES = ['Acme Corp','ByteVault AG','SignumTech','PaperTrail GmbH','Vault
 const CREGS = ['EU','UAE','US','KSA','APAC','UK'];
 const CINDS = ['Banking','Real Estate','Education','Healthcare','Government','Legal'];
 
+function maxCustomers() {
+  // Cap scales with active non-EU regions: 60 / 100 / 150 / 200
+  const nonEu=Object.values(G.regions).filter(r=>r.active&&r.id!=='eu').length;
+  return [60,100,150,200][nonEu];
+}
 function addCustomer() {
-  if (G.customers.length >= 60) return;
+  if (G.customers.length >= maxCustomers()) return;
   const name = CNAMES[Math.floor(Math.random()*CNAMES.length)] + ' ' + (G.customers.length+1);
   const tier = rollTier();
   G.customers.push({ id:Date.now()+Math.random(), name, tier, mrr:tier.mrr, addons:[], satisfaction:70+Math.floor(Math.random()*30), region:CREGS[Math.floor(Math.random()*CREGS.length)], industry:CINDS[Math.floor(Math.random()*CINDS.length)], age:0 });
@@ -444,7 +449,8 @@ function churnLoop() {
     const openTkts=G.tickets.filter(t=>!t.resolved&&t.customer===c.name).length;
     c.satisfaction = Math.max(0,Math.min(100,c.satisfaction-openTkts*1.0-G.techDebt*.05));
     const isTrial=c.tier.id.startsWith('t');
-    const churn=isTrial?.04:c.satisfaction<20?.02:c.satisfaction<40?.005:0;
+    const baseChurn=Math.min(G.monthCount*.00003,.002); // market pressure ramps slowly, caps at 0.2%
+    const churn=isTrial?.04:c.satisfaction<20?.02:c.satisfaction<40?.008:baseChurn;
     if (Math.random()<churn) {
       log(`😢 ${c.name} churned [${c.tier.label}]`,'re');
       toast(`😢 ${c.name} cancelled`,'re');
@@ -463,11 +469,12 @@ function churnLoop() {
 function resourcesLoop() {
   G.reputation=Math.max(0,Math.min(100,G.reputation));
   G.morale=Math.max(0,Math.min(100,G.morale));
-  if (G.tick%25===0) G.techDebt+=.8;
+  if (G.tick%25===0) G.techDebt+=Math.min(.8+G.monthCount*.05, 3.0); // ramps to 3× by month ~44
   if (G.tick%80===0&&G.morale<80) G.morale+=1;
 }
 function ticketGenLoop() {
-  if (G.customers.length&&Math.random()<.006*G.customers.length) genTicket();
+  const ageFactor=Math.min(1+G.monthCount*.04, 3.0); // ramps to 3× by month ~50
+  if (G.customers.length&&Math.random()<.006*G.customers.length*ageFactor) genTicket();
 }
 function featureReqLoop() {
   const pending=G.featureRequests.filter(r=>r.accepted===null);
@@ -682,7 +689,7 @@ function levelTeam(id,cost) {
 }
 
 function renderCustomers() {
-  document.getElementById('c-tot').textContent=G.customers.length;
+  document.getElementById('c-tot').textContent=`${G.customers.length} / ${maxCustomers()}`;
   document.getElementById('c-mrr').textContent='€'+FMT(calcMRR());
   const el=document.getElementById('cust-list');
   if(!G.customers.length){el.innerHTML=`<div style="font-family:var(--mo);font-size:var(--fmn);color:var(--tm);padding:calc(6px*var(--s))">No customers yet. Sales team on it...</div>`;return;}

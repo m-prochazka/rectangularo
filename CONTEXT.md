@@ -1,6 +1,6 @@
 # RECTANGULARO — Project Context
 > Drop this file in your project root and paste it to any Claude instance to resume with zero re-explaining.
-> Last updated: v3.5 — February 2026
+> Last updated: v3.6 — February 2026
 
 ---
 
@@ -48,10 +48,10 @@ rectangularo/
 |----------|-------------|
 | **Cash** | Main currency. Starts €5,000. Goes negative = danger. |
 | **MRR** | Monthly Recurring Revenue from paying customers × region multiplier |
-| **BURN/mo** | Monthly costs: salaries (€200/headcount) + infra (€500) + regional infra (€300/active non-EU region) |
+| **BURN/mo** | Monthly costs: salaries (€200/headcount) + infra (€700) + regional infra (€300/active non-EU region) + €20/customer |
 | **Reputation** | 0–100. Affects tier of incoming customers. Rises with good events, falls with bad ones. |
 | **Morale** | 0–100. Multiplies all team efficiency. Falls from crunch debuffs, rises from good events/upgrades. |
-| **Tech Debt** | Grows passively (+0.5 every 25 ticks) and from crunch. Slows dev. Testing + DevOps reduce it. |
+| **Tech Debt** | Grows passively (+0.8 + monthCount×0.05 every 25 ticks, capped at 3.0). Slows dev. Testing + DevOps reduce it. |
 
 ### Monthly P&L
 - Every 600 game ticks = 1 in-game month
@@ -60,11 +60,12 @@ rectangularo/
 - If cash goes negative: warning toast + red flash
 
 ### Customers
-- Max 60 customers
+- **Max customers scales with active regions:** EU only → 60, +UAE → 100, +KSA → 150, +USA → 200. `maxCustomers()` helper computes this from active non-EU region count.
 - 8 plan tiers: Trial Start / Trial Pro / Trial Business / Start (€99) / Pro (€299) / Business (€699) / Ultimate (€2,499) / Enterprise (€4,999)
 - Trials can convert to paid at 70%+ satisfaction after 30 ticks (1% chance/tick)
-- Churn: trials 4%, satisfaction <20 → 2%, satisfaction <40 → 0.5%
-- Satisfaction affected by open tickets (-0.8 per open ticket/tick) and tech debt (-0.03×debt/tick)
+- **Churn (v3.5+):** trials 4%, satisfaction <20 → 2%, satisfaction <40 → 0.8%, satisfied paid → `monthCount×0.00003` (market pressure baseline, caps at 0.2%)
+- **Satisfaction decay:** open tickets (-1.0/ticket/tick), tech debt (-0.05×debt/tick)
+- **Ticket generation** scales with time: `0.006 × customers × (1 + monthCount×0.04)`, capped at 3× base rate
 - Each active production region adds its `mrrMult` to the total MRR multiplier
 
 ### Teams (9 departments)
@@ -444,8 +445,8 @@ Claude Code can read the files directly — you don't need to paste code. Just s
 Planned features and improvements. Implement these in future sessions.
 
 ### Gameplay / Balance
-- [ ] **Increase max customers** — current cap is 60, feels too low. Consider scaling cap with regions unlocked or upgrades purchased (e.g. 60 base, +30 per non-EU region active = 150 max with all regions).
-- [ ] **Progressive difficulty** — game should get harder the longer it runs. Ideas: ticket generation rate scales with tick count, churn rate increases past month 12, tech debt passive growth accelerates, events skew more negative over time, burn rate creep (infra costs scale with customers). Should feel like real startup scaling pressure.
+- [x] **Increase max customers** — implemented v3.6: cap scales with active regions (60/100/150/200). `maxCustomers()` helper, displayed as `count / cap` in customers view.
+- [x] **Progressive difficulty** — implemented v3.6: ticket gen ×(1+month×0.04), tech debt passive +(month×0.05) per 25t, paid churn baseline +(month×0.00003). All capped at reasonable maximums.
 
 ### Content
 - [ ] **More ticket templates** — `TKT_POOL` currently has ~15 entries. Add 20–30 more. Mix of: billing/invoice issues, GDPR data requests, "my signature doesn't look like me", enterprise compliance demands, API errors, mobile app crashes, white-label logo complaints, integration failures (MS365, Odoo), SLA breach warnings.
@@ -458,6 +459,14 @@ Planned features and improvements. Implement these in future sessions.
 ---
 
 ## Changelog
+
+### v3.6 — February 2026
+- **Scaling customer cap**: `maxCustomers()` function replaces hardcoded 60. Cap: EU only=60, +UAE=100, +KSA=150, +USA=200. Displayed as `count / cap` in customers view. Rewards unlocking regions beyond MRR gains.
+- **Progressive difficulty — tickets**: `ticketGenLoop()` multiplies rate by `(1 + monthCount×0.04)`, capped at 3×. By month 12: +48% more tickets. By month 25: 2× tickets.
+- **Progressive difficulty — tech debt**: Passive debt per 25 ticks scales from 0.8 to `0.8 + monthCount×0.05`, capped at 3.0. By month 12: 1.4/tick. By month 24: 2.0/tick. Forces ongoing investment in testing/devops.
+- **Progressive difficulty — churn**: Satisfied paid customers now have a baseline churn of `monthCount×0.00003` per tick (caps at 0.2%). Simulates market competition and rising expectations. Month 6 = ~0.018%/tick; month 20 = ~0.06%/tick.
+- **Churn tightened**: Mid-satisfaction churn (sat<40) raised from 0.5% to 0.8%.
+- **Version header**: Updated to v3.5 in prior session; now v3.6.
 
 ### v3.5 — February 2026
 - **No-recycle feature requests**: `G.usedRequests[]` added to state. Once a request is analyzed, its name is permanently recorded and never regenerates from `REQ_POOL`. Pool exhausts after all 14 entries are seen.
