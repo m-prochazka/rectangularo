@@ -33,9 +33,9 @@ const G = {
   },
   regions: {
     eu:  { id:'eu',  name:'Europe',        flag:'🇪🇺', active:true,  deploying:false, progress:0, cost:0,     mrrMult:1.00, compliance:['GDPR','eIDAS','ISO 27001'] },
-    uae: { id:'uae', name:'UAE / Dubai',   flag:'🇦🇪', active:false, deploying:false, progress:0, cost:8000,  mrrMult:0.25, compliance:['UAE Pass','TDRA'] },
-    ksa: { id:'ksa', name:'Saudi Arabia',  flag:'🇸🇦', active:false, deploying:false, progress:0, cost:10000, mrrMult:0.20, compliance:['NAFATH','NCA'] },
-    usa: { id:'usa', name:'USA',           flag:'🇺🇸', active:false, deploying:false, progress:0, cost:12000, mrrMult:0.30, compliance:['ESIGN Act','SOC 2'] },
+    uae: { id:'uae', name:'UAE / Dubai',   flag:'🇦🇪', active:false, deploying:false, progress:0, cost:25000,  mrrMult:0.25, compliance:['UAE Pass','TDRA'] },
+    ksa: { id:'ksa', name:'Saudi Arabia',  flag:'🇸🇦', active:false, deploying:false, progress:0, cost:40000, mrrMult:0.20, compliance:['NAFATH','NCA'] },
+    usa: { id:'usa', name:'USA',           flag:'🇺🇸', active:false, deploying:false, progress:0, cost:60000, mrrMult:0.30, compliance:['ESIGN Act','SOC 2'] },
   },
 };
 

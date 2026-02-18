@@ -61,8 +61,8 @@ const CEO_EVENTS = [
     desc:'Joe sent a voice memo from the conference bar. Background: jazz. He committed to "AI-native quantum signing" for three Fortune 500s by Q1. Dave Rocky McHill is breathing into a paper bag.',
     choices:[
       { label:'😤 Build what Joe promised (somehow)', cls:'re',
-        effect:'Dev + DevOps crunch 50s. Cash +€20K pipeline. Tech debt +30.',
-        action:()=>{ applyDebuff('dev','✈️ JOE PROMISES',50); applyDebuff('devops','✈️ JOE PROMISES',50); G.cash+=20000; G.techDebt+=30; log('Dave Rocky McHill: "What is quantum signing. I am BEGGING you."','re'); }},
+        effect:'Cash +€60K (3 Fortune 500 deals close!). Joe takes full credit. But: Dev + DevOps crunch 50s. Tech debt +30. Dave is not okay.',
+        action:()=>{ applyDebuff('dev','✈️ JOE PROMISES',50); applyDebuff('devops','✈️ JOE PROMISES',50); G.cash+=60000; G.techDebt+=30; log('€60K from three enterprise deals. Dave Rocky McHill: "What is quantum signing. I am BEGGING you." The features shipped. They are technically "AI-native" (there is a loading spinner with a brain emoji). The clients are satisfied enough. Dave is not.','re'); }},
       { label:'📋 Andre manages expectations', cls:'gr',
         effect:'Cash +€12K. Rep +3. Andre calls back. Joe is mildly embarrassed.',
         action:()=>{ G.cash+=12000; G.reputation+=3; log('Andre Mochalatte: "The pipeline is healthy and the roadmap is intact." Joe learned nothing.','gr'); }},
@@ -77,8 +77,8 @@ const LEADERSHIP_EVENTS = [
     desc:'Half the team is remote. The Prague office has 8 desks for 22 people. David Hiswoman already opened LinkedIn. Luke Hail has updated his CV.',
     choices:[
       { label:'🏢 Enforce 5 days — save office culture', cls:'re',
-        effect:'Morale -25. DevOps team protesting. BUT: Rep +3 from decisive leadership. Risk of key departures.',
-        action:()=>{ G.morale-=25; applyDebuff('devops','RTO PROTEST',60); G.reputation+=3; log('David Hiswoman: "I live in Brno." Andre: "That\'s fine." David: "It is not fine. I live two hours away." Leadership style: controversial but resolute.','re'); }},
+        effect:'Rep +12 (board impressed: "decisive leadership"). Investors nod. Joe finally stops texting. BUT: Morale -25. DevOps protesting. Key departures likely.',
+        action:()=>{ G.morale-=25; applyDebuff('devops','RTO PROTEST',60); G.reputation+=12; log('David Hiswoman: "I live in Brno." Andre: "That\'s fine." David: "It is not fine. I live two hours away." The board sent a supportive email about "culture and accountability." Three people opened LinkedIn. Leadership style: controversial but the board loved it.','re'); }},
       { label:'🏠 Hybrid — 2 days/week compromise', cls:'gr',
         effect:'Morale +10. Nobody fully happy but stable. Rep +5 for pragmatism.',
         action:()=>{ G.morale+=10; G.reputation+=5; log('Hybrid policy adopted. Nobody is perfectly happy. That is the definition of fair leadership.','in'); }},
@@ -116,8 +116,8 @@ const LEADERSHIP_EVENTS = [
         effect:'Morale +20. Reputation +3. Terry: "I am still Finance, this is just a hobby."',
         action:()=>{ G.morale+=20; G.reputation+=3; log('Terry Stroll\'s Slack channel: 47 messages. Wes Wonder posted a drawing of a smiling fridge. Morale is exceptional.','mo'); }},
       { label:'📋 Escalate to actual HR', cls:'re',
-        effect:'Morale -5. Terry: "Oh right, we don\'t have HR." Awkward silence.',
-        action:()=>{ G.morale-=5; log('There is no HR department. Andre Mochalatte googles "how to be HR" for 15 minutes. Terry keeps the channel.','ye'); }},
+        effect:'Rep +4 (proper governance!). Terry finds €900 in unclaimed budget while "doing HR." Cash +€900. But: Morale -5. No HR exists. Terry keeps the channel anyway.',
+        action:()=>{ G.cash+=900; G.reputation+=4; G.morale-=5; log('There is no HR department. Andre Mochalatte googles "how to be HR" for 15 minutes. Terry, while pretending to be HR, found an unclaimed Q2 budget line: €900. She transferred it to the team social fund. Terry keeps the channel.','ye'); }},
     ]},
 
   { from:'dave', badge:'🐛 TECH DEBT CRISIS',
@@ -306,8 +306,8 @@ const THRESHOLD_EVENTS = {
         effect: 'Debt -60. Cash -€5K. Dev team: relieved. 3-week crunch.',
         action: ()=>{ G.cash-=5000; G.techDebt=Math.max(0,G.techDebt-60); applyDebuff('dev','💻 EMERGENCY REFACTOR',80); G.morale+=10; G.reputation+=5; G.lastCrisisTick={'techDebt':G.tick}; log('Dave Rocky McHill: "THANK YOU. We are saved."','gr'); }},
       { label: '⏱️ Ignore and ship faster (Quick fix only)', cls: 're',
-        effect: 'Debt +40 (short-term band-aid). Cash +€2K (faster velocity). Dave morale -20. Long-term disaster.',
-        action: ()=>{ G.techDebt+=40; G.cash+=2000; G.morale-=20; G.reputation-=5; G.lastCrisisTick={'techDebt':G.tick}; log('Dave Rocky McHill: "This is fine 🔥 Not fine. This is bad."','re'); }},
+        effect: 'Cash +€10K (feature shipping velocity!). Short-term: everything looks fine. But: Debt +40. Dave morale -20. Long-term: structural collapse.',
+        action: ()=>{ G.techDebt+=40; G.cash+=10000; G.morale-=20; G.reputation-=5; G.lastCrisisTick={'techDebt':G.tick}; log('Dave Rocky McHill: "This is fine 🔥 Not fine. This is bad." The extra velocity shipped 3 features this sprint. €10K in revenue. The codebase is now 90% duct tape. Dave knows. Everyone knows.','re'); }},
     ]
   },
 
@@ -322,8 +322,8 @@ const THRESHOLD_EVENTS = {
         effect: 'Morale +30. Dev progress paused 200s. Team returns peaceful.',
         action: ()=>{ G.morale=Math.min(100,G.morale+30); applyDebuff('dev','🏖️ COMPANY BREAK',200); applyDebuff('support','🏖️ COMPANY BREAK',200); applyDebuff('sales','🏖️ COMPANY BREAK',200); G.cash-=3000; G.lastCrisisTick={'morale':G.tick}; log('Everyone came back to clean desks and a fruit basket. Joe was confused. Theresa is recalculating burn.','gr'); }},
       { label: '💪 Motivational meeting — push through', cls: 're',
-        effect: 'Morale -10 more (backfired). Multiple people resign. Rep -10.',
-        action: ()=>{ G.morale=Math.max(0,G.morale-10); G.reputation-=10; const departed=Math.floor(Math.random()*3)+1; G.teams.dev.headcount=Math.max(1,G.teams.dev.headcount-1); log(`${departed} people left the company. Their exit interviews: "I was not heard."`, 're'); G.lastCrisisTick={'morale':G.tick}; }},
+        effect: 'Cash +€3K saved (no company break). Short-term: productivity maintained. But: Morale -10 more (backfired badly). People resign. Rep -10.',
+        action: ()=>{ G.cash+=3000; G.morale=Math.max(0,G.morale-10); G.reputation-=10; const departed=Math.floor(Math.random()*3)+1; G.teams.dev.headcount=Math.max(1,G.teams.dev.headcount-1); log(`Saved €3K by skipping the company break. ${departed} people left the company. Their exit interviews: "I was not heard." The €3K does not cover the cost of replacing them.`, 're'); G.lastCrisisTick={'morale':G.tick}; }},
     ]
   },
 
@@ -377,8 +377,8 @@ const DEV_EVENTS = [
         effect:'Dev REFACTOR 90s. Debt -30. Luke morale +25. Pavel cannot be asked.',
         action:()=>{ applyDebuff('dev','📊 EXCEL MIGRATION',90); G.techDebt=Math.max(0,G.techDebt-30); G.morale+=25; log('Luke Hail: "It is done. The Excel is gone. I feel like a new man." Dave Rocky McHill is weeping with relief.','gr'); }},
       { label:'🧩 Keep the Excel — it works, technically', cls:'re',
-        effect:'Debt +35. Morale -15. But nothing breaks today. Pavel would be proud.',
-        action:()=>{ G.techDebt+=35; G.morale-=15; log('Luke Hail: "Fine. I have added FINAL_v3_REAL_USE_THIS_v2.xlsx. I need a drink." The Excel persists.','re'); }},
+        effect:'Cash +€500 (saved migration cost). Dev velocity: unchanged today. Pavel would be proud. But: Debt +35. Morale -15. Luke Hail: 💀',
+        action:()=>{ G.cash+=500; G.techDebt+=35; G.morale-=15; log('Luke Hail: "Fine. I have added FINAL_v3_REAL_USE_THIS_v2.xlsx. I need a drink." The Excel persists. Tab 48 now exists. It is also blank. Pavel\'s legacy lives on.','re'); }},
     ]},
 
   { from:'luke_h', badge:'🔧 BACKEND INCIDENT',
@@ -389,8 +389,8 @@ const DEV_EVENTS = [
         effect:'Cash -€300. Dev debuff 40s (setup time). Debt -10. Future Luke will thank you.',
         action:()=>{ G.cash-=300; applyDebuff('dev','🖥️ STAGING SETUP',40); G.techDebt=Math.max(0,G.techDebt-10); log('Luke Hail: "Staging is live. We are no longer cowboys." Dave Rocky McHill: "I miss the cowboys era."','gr'); }},
       { label:'🤠 Embrace cowboy culture — YOLO to prod', cls:'re',
-        effect:'Debt +20. Morale -10 (Luke specifically). But saves €300 and 40 seconds.',
-        action:()=>{ G.techDebt+=20; G.morale-=10; log('Luke Hail commits message: "yolo". Dave: "We are professionals." Sarah Lawton has updated her bug count.','re'); }},
+        effect:'Cash +€300 saved. Ship RIGHT NOW. No waiting. No process. But: Debt +20. Morale -10 (Luke, specifically). Sarah is already writing bug reports.',
+        action:()=>{ G.cash+=300; G.techDebt+=20; G.morale-=10; log('Luke Hail commits message: "yolo". Dave: "We are professionals." Sarah Lawton has updated her bug count. The €300 saved in setup costs has been noted. It will not be enough.','re'); }},
     ]},
 
   { from:'luke_h', badge:'🔧 BACKEND DISCOVERY',
@@ -610,8 +610,8 @@ const TOOLS_EVENTS = [
         effect:'Cash -€400/mo (hosting). Dev debuff 60s. Debt -20. Pavel\'s Ghost is exorcised.',
         action:()=>{ G.cash-=400; applyDebuff('dev','🐳 DB MIGRATION',60); G.techDebt=Math.max(0,G.techDebt-20); log('Luke Hail: "Database is on RDS. Pavel\'s Ghost is gone. I hope Pavel\'s laptop battery is okay." The latency dropped 80%. David Hiswoman is very happy.','gr'); }},
       { label:'🕯️ Do not disturb Pavel\'s Ghost — it has 99.2% uptime', cls:'re',
-        effect:'Nothing changes. The ghost persists. Debt +20. Luke morale -15.',
-        action:()=>{ G.techDebt+=20; G.morale-=15; log('Luke Hail: "We are leaving it." He has lit a candle for Pavel. The database uptime is 99.2%. Nobody asks how. Nobody wants to know.','re'); }},
+        effect:'Cash +€400/mo saved (no cloud hosting fees). 99.2% uptime is real. But: Debt +20. Luke morale -15. This WILL collapse eventually.',
+        action:()=>{ G.cash+=400; G.techDebt+=20; G.morale-=15; log('Luke Hail: "We are leaving it." He has lit a candle for Pavel. The database uptime is 99.2%. The €400/mo cloud hosting bill does not exist. Nobody asks where the database actually is. Nobody wants to know.','re'); }},
     ]},
 
 ];
@@ -627,8 +627,8 @@ const ANDRE_EVENTS = [
         effect:'Dev morale +15. Sprint ships on time. Joe\'s one-on-one lasts 2 hours.',
         action:()=>{ G.morale+=15; log('The sprint shipped. All 8 tickets. On Friday. On time. Luke Hail said "thank you" to Andre in a Slack DM. Andre replied with a thumbs up. Dave Rocky McHill cried a little.','gr'); }},
       { label:'🤷 Let Joe add the tickets — \'it\'s just 4 things\'', cls:'re',
-        effect:'Dev debuff 40s. Morale -15. Nothing ships.',
-        action:()=>{ applyDebuff('dev','🔥 MID-SPRINT CHAOS',40); G.morale-=15; log('The sprint did not ship. 2 of Joe\'s 4 tickets were duplicates of existing features. 1 was "make it pop." Luke Hail has requested a 1-week vacation, effective immediately.','re'); }},
+        effect:'Joe is thrilled. Cash +€10K (Joe\'s "priority client" conversion). Rep +5 from CEO alignment. BUT: Dev debuff 40s. Morale -15. Nothing ships. Andre goes quiet.',
+        action:()=>{ G.cash+=10000; G.reputation+=5; applyDebuff('dev','🔥 MID-SPRINT CHAOS',40); G.morale-=15; log('The sprint did not ship. 2 of Joe\'s 4 tickets were duplicates of existing features. 1 was "make it pop." The "priority client" conversion was €10K. It did not justify this. Luke Hail has requested a 1-week vacation, effective immediately.','re'); }},
     ]},
 
   { from:'andre', badge:'📞 SALES INTERVENTION',
@@ -639,8 +639,8 @@ const ANDRE_EVENTS = [
         effect:'Rep +3. Morale +10. The client stays. Lucas is not pleased.',
         action:()=>{ G.reputation+=3; G.morale+=10; log('The client accepted a phased ERP delivery plan. Q1: data export API. Q2: import hooks. Q3: actual integration. They are satisfied. Lucas Cloakfield has described Andre\'s intervention as "frankly unnecessary." Andre has said nothing.','gr'); }},
       { label:'💸 Honor Lucas\'s promise — all-hands on ERP', cls:'re',
-        effect:'Dev debuff 60s. Morale -20. Debt +25. All other work stops.',
-        action:()=>{ applyDebuff('dev','🔗 ERP DEATH MARCH',60); G.morale-=20; G.techDebt+=25; log('The team dropped everything for ERP integration. 6 weeks of work delivered an API that connects to one ERP system. The client uses a different one. Lucas: "I said open API. That\'s open." Luke Hail has submitted his notice. Dave got him to stay. Barely.','re'); }},
+        effect:'Cash +€180K (the deal lands!). Lucas is ecstatic. But: Dev debuff 60s. Morale -20. Debt +25. Everything else stops for 6 weeks.',
+        action:()=>{ G.cash+=180000; applyDebuff('dev','🔗 ERP DEATH MARCH',60); G.morale-=20; G.techDebt+=25; log('€180K hits the account. The team dropped everything for ERP integration. 6 weeks of work delivered an API that connects to one ERP system. The client uses a different one. Lucas: "I said open API. That\'s open." Luke Hail has submitted his notice. Dave got him to stay. Barely.','re'); }},
     ]},
 
   { from:'andre', badge:'✂️ CFO STANDOFF',
@@ -651,8 +651,8 @@ const ANDRE_EVENTS = [
         effect:'Morale +15. Rep +2. Theresa\'s slide is shelved.',
         action:()=>{ G.morale+=15; G.reputation+=2; log('QA stays. Sarah Frost sent Andre a Slack message: "Thank you." Andre replied: "Don\'t thank me, ship faster." Sarah Frost has increased test coverage to 87%. Theresa\'s slide has been archived. Theresa is not done.','gr'); }},
       { label:'💀 Side with Theresa — save €18K/month', cls:'re',
-        effect:'QA dissolved. Cash +€18K/mo. But bugs hit prod. Rep -10. Morale -25.',
-        action:()=>{ G.cash+=18000; G.reputation-=10; G.morale-=25; G.techDebt+=30; log('QA team is dissolved. Month 1: 3 critical bugs in production. One customer lost. Month 2: a login bug exposes user emails for 6 hours. Lucas calls it "a learning opportunity." Andre has gone very quiet.','re'); }},
+        effect:'Cash +€18K/mo. Board calls it "lean operations." Theresa impressed. But: QA is gone. Bugs will hit prod. Rep -10. Morale -20. Debt +30.',
+        action:()=>{ G.cash+=18000; G.reputation-=10; G.morale-=20; G.techDebt+=30; log('QA team is dissolved. Theresa sent a "fiscal discipline" shoutout in the leadership channel. Month 1: 3 critical bugs in production. One customer lost. Month 2: a login bug exposes user emails for 6 hours. Lucas calls it "a learning opportunity." Andre has gone very quiet.','re'); }},
     ]},
 
   { from:'andre', badge:'🎤 CONFERENCE AMBUSH',
@@ -675,8 +675,8 @@ const ANDRE_EVENTS = [
         effect:'Debt -15. Dev morale +20. Everything gets faster.',
         action:()=>{ G.techDebt=Math.max(0,G.techDebt-15); G.morale+=20; log('The €12K is spent: new CI/CD pipeline, error monitoring, load testing suite. Luke Hail: "The pipeline is beautiful." Dave Rocky McHill: "We ship twice as fast." Theresa: "I\'d like to see the ROI in Q3."','gr'); }},
       { label:'📋 Buy Confluence Premium + Jira Advanced', cls:'re',
-        effect:'Morale -10. Nothing improves. Joe loves the new dashboards.',
-        action:()=>{ G.morale-=10; log('The budget goes to Confluence Premium and Jira Advanced Roadmaps. There are now 14 new dashboard views. Joe made a custom Epic velocity chart. Nothing is faster. Luke Hail has looked at the pipeline and then at the dashboards and said nothing for a long time.','re'); }},
+        effect:'Joe ecstatic. Rep +5 (C-suite loves the dashboard). Executive alignment ✅. But: Morale -10 (devs furious). Nothing actually improves. €12K gone.',
+        action:()=>{ G.reputation+=5; G.morale-=10; log('The budget goes to Confluence Premium and Jira Advanced Roadmaps. There are now 14 new dashboard views. Joe made a custom Epic velocity chart and shared it on LinkedIn (34 likes). Nothing is faster. Luke Hail has looked at the pipeline and then at the dashboards and said nothing for a long time.','re'); }},
     ]},
 
   { from:'andre', badge:'📢 CEO AI DECREE',
@@ -687,8 +687,8 @@ const ANDRE_EVENTS = [
         effect:'Rep holds. Morale +5. Andre writes a real AI strategy doc.',
         action:()=>{ G.morale+=5; log('Andre sent each client a calm email: "Our AI integration is in scoping phase. We\'ll share a roadmap by Q2." He then wrote a 4-page AI strategy doc. It contains 2 real ideas. Luke Hail called them "actually doable." This is the first time Luke has called anything doable.','gr'); }},
       { label:'🚀 Commit to the pivot — AI features by Q2', cls:'re',
-        effect:'Morale -20. Debt +30. Rep -5. Q2 arrives. Nothing is AI.',
-        action:()=>{ G.morale-=20; G.techDebt+=30; G.reputation-=5; log('Q2 arrived. The AI feature is a keyword search with "AI-powered" in the label. One client noticed. Joe called it "a foundation." Andre did not attend that call.','re'); }},
+        effect:'Rep +15 (press LOVES it). Cash +€30K from an excited investor. Joe on every podcast. But: Morale -20. Debt +30. Rep -15 when Q2 delivers nothing.',
+        action:()=>{ G.reputation+=15; G.cash+=30000; G.morale-=20; G.techDebt+=30; G.reputation-=15; log('The announcement got 4 press mentions and an excited investor wired €30K. Q2 arrived. The AI feature is a keyword search with "AI-powered" in the label. One client noticed. Joe called it "a foundation." Andre did not attend that call. The investor has not replied since.','re'); }},
     ]},
 
   { from:'andre', badge:'📋 CONTRACT CLEANUP',
@@ -723,8 +723,8 @@ const ANDRE_EVENTS = [
         effect:'Morale +10. The approved hire happens. Joe\'s posts come down quietly.',
         action:()=>{ G.morale+=10; log('Andre spoke to Joe privately. The 5 extra job posts were removed "due to restructuring." Andre\'s approved backend hire started 6 weeks later. Luke Hail described them as "competent and calm." This is the best review Luke gives. Theresa asked why the posts were up. Andre: "Miscommunication." Joe posted "great things coming 👀" on LinkedIn. 104 likes.','gr'); }},
       { label:'🤷 Let all 6 roles be filled — growth is good', cls:'re',
-        effect:'Cash -€80K/mo. Theresa furious. Budget crisis next quarter.',
-        action:()=>{ G.cash-=80000; G.morale-=10; log('All 6 roles were filled. Monthly burn increased by €80K. Theresa presented a revised runway slide in Q2. It was not optimistic. Joe called it "an investment in talent." Andre stared at the slide for a long time and said nothing. The new hires are good. The runway is not.','re'); }},
+        effect:'Morale +20 (team pumped about new colleagues). Rep +8 ("we\'re scaling!"). Joe posts about it. But: Cash -€80K/mo. Runway: dangerous. Theresa is furious.',
+        action:()=>{ G.morale+=20; G.reputation+=8; G.cash-=80000; log('All 6 roles were filled. The new hires are genuinely good. Team morale is at a high. Monthly burn increased by €80K. Theresa presented a revised runway slide in Q2. It was not optimistic. Joe called it "an investment in talent." Andre stared at the slide for a long time and said nothing.','re'); }},
     ]},
 
 ];

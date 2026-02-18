@@ -329,8 +329,8 @@ Threshold events have a 3,000–5,000 tick cooldown before re-triggering.
 - [ ] `Documents` view stats — wired in `renderTopbar()`, verify they update correctly in-game
 - [ ] Win condition checks `DEV_Q.every(f=>f.done)` — includes dynamically added analyst items, so player must also ship those to win
 - [ ] Feature requests added via analyst are not saved/restored by the save system (only original 15 tracked by index)
-- [ ] No sound effects
-- [ ] No achievements system
+- [ ] No sound effects - not nescessary right now
+- [ ] No achievements system - not nescessary right now
 - [x] Wes Wonder and Luke Hail have unique events (DEV_EVENTS array)
 - [x] Addons sold manually with SELL button → now auto-sold by sales team passively
 - [x] Andre Mochalatte has dedicated COO events (ANDRE_EVENTS, 9 events)
@@ -343,6 +343,7 @@ Threshold events have a 3,000–5,000 tick cooldown before re-triggering.
 - [x] Tickets clear too fast with many support staff — fixed v3.5: support multiplier 0.9→0.55
 - [x] Morale/tech debt/reputation too easy to maintain — fixed v3.5: tech debt passive +0.8/25t (was +0.5), testing reduction 0.9→0.5, devops reduction 0.8→0.4, morale auto-heal every 80t cap 80 (was 60t cap 85), satisfaction debt penalty 0.03→0.05/tick
 - [x] Feature requests recycling after analysis — fixed v3.5: `G.usedRequests[]` permanently tracks analyzed names; once seen, a request never regenerates
+- [ ] Event's are clearly good - bad and the bad choice doesn't give enough + so there's no need to pick it (game is very easy)
 
 ---
 
@@ -451,6 +452,8 @@ Planned features and improvements. Implement these in future sessions.
 ### Content
 - [ ] **More ticket templates** — `TKT_POOL` currently has ~15 entries. Add 20–30 more. Mix of: billing/invoice issues, GDPR data requests, "my signature doesn't look like me", enterprise compliance demands, API errors, mobile app crashes, white-label logo complaints, integration failures (MS365, Odoo), SLA breach warnings.
 - [ ] **More feature request templates** — `REQ_POOL` currently has 14 entries. Add 10–15 more. Mix of good/bad. Ideas: Zapier Integration (good), Physical Signature Notary (bad), "Add a Confetti Animation on Sign" (bad/fun), Webhook Support (good), Multi-language UI (good), "Make it Feel More Premium" (bad/vague), HIPAA Compliance Mode (good), Print & Sign Support (bad/anachronistic), 2FA / MFA (good), Salesforce CRM Integration (good).
+- [ ] Tickets should be linked to certain customers, custoemrs have their own happines implemented, that should changed based on the tickets
+- [ ] You should be able to lose customers
 
 ### Technical
 - [ ] **Save system for analyst-queued items** — dynamically added feature requests via analyst are lost on reload. Needs custom serialization since they have closures as `effect()` functions.
