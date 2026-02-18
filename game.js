@@ -12,7 +12,7 @@ const FMT = n => {
 // ─── GAME STATE ─────────────────────────────────────────
 const G = {
   tick: 0, speed: 1, paused: false,
-  cash: 5000, morale: 100, reputation: 50, techDebt: 0,
+  cash: 12000, morale: 100, reputation: 50, techDebt: 0,
   monthTick: 0, monthCount: 0, monthlyBurn: 0,
   docsProcessed: 0, featuresShipped: 0, deployments: 0, ticketsResolved: 0, addonsSold: 0,
   customers: [], tickets: [], featureRequests: [], usedRequests: [],
@@ -112,10 +112,10 @@ function calcMRR() {
 
 function calcBurn() {
   let b = 0;
-  Object.values(G.teams).forEach(t => { b += t.headcount * 200; });
-  b += 700; // base infra
-  b += Object.values(G.regions).filter(r=>r.active&&r.id!=='eu').length * 300;
-  b += G.customers.length * 20; // scaling infra — more customers = more servers
+  Object.values(G.teams).forEach(t => { b += t.headcount * 450; });
+  b += 2000; // base infra
+  b += Object.values(G.regions).filter(r=>r.active&&r.id!=='eu').length * 3000;
+  b += G.customers.length * 70; // scaling infra — more customers = more servers
   return b;
 }
 
@@ -254,18 +254,18 @@ function unlockA(id) { if (ADDONS[id]) ADDONS[id].unlocked = true; }
 
 // ─── UPGRADES ─────────────────────────────────────────────
 const UPGRADES = [
-  { id:'crm',   name:'CRM System',           cost:800,  done:false, desc:'Sales closes 25% more deals.',               apply:()=>{ G.teams.sales.buffs.push('CRM'); G.teams.sales.level++; }},
-  { id:'kb',    name:'Knowledge Base',        cost:600,  done:false, desc:'Support resolves tickets 30% faster.',       apply:()=>{ G.teams.support.buffs.push('KB'); }},
-  { id:'cicd',  name:'CI/CD Pipeline',        cost:1500, done:false, desc:'Dev ships 25% faster. DevOps rejoices.',     apply:()=>{ G.teams.dev.buffs.push('CI/CD'); G.teams.devops.buffs.push('CI/CD'); }},
-  { id:'sla',   name:'SLA Agreements',        cost:700,  done:false, desc:'Churn -15%. Rep +10.',                       apply:()=>{ G.reputation=Math.min(100,G.reputation+10); }},
-  { id:'mon',   name:'Observability Stack',   cost:1200, done:false, desc:'Catch bugs first. Debt -20.',                apply:()=>{ G.techDebt=Math.max(0,G.techDebt-20); G.teams.devops.buffs.push('MONITORING'); }},
-  { id:'hr',    name:'HR & People Ops',       cost:1800, done:false, desc:'Hire costs -20%. Morale +15. (Terry relieved.)',apply:()=>{ G.morale=Math.min(100,G.morale+15); }},
-  { id:'iso',   name:'ISO 27001 Cert',        cost:4000, done:false, desc:'Enterprise deals unlock. Rep +20.',           apply:()=>{ G.reputation=Math.min(100,G.reputation+20); unlockA('domain'); }},
-  { id:'ai',    name:'Internal AI Tools',     cost:2500, done:false, desc:'All teams +10% eff.',                        apply:()=>{ G.morale=Math.min(100,G.morale+8); Object.values(G.teams).forEach(t=>t.buffs.push('AI')); }},
-  { id:'remote',name:'Remote-First Policy',   cost:500,  done:false, desc:'Morale +20. Dave stops complaining.',        apply:()=>{ G.morale=Math.min(100,G.morale+20); }},
-  { id:'hack',  name:'Hackathon',             cost:1200, done:false, desc:'Dave\'s team ships 2 features instantly.',   apply:()=>{ skipFeats(2); }},
-  { id:'part',  name:'Channel Partner Program',cost:3000,done:false, desc:'+30% sales reach via resellers.',             apply:()=>{ G.teams.sales.buffs.push('PARTNERS'); }},
-  { id:'data',  name:'EU Data Residency',     cost:5000, done:false, desc:'GDPR badge. EU enterprise deals +50%.',      apply:()=>{ G.reputation=Math.min(100,G.reputation+15); }},
+  { id:'crm',   name:'CRM System',           cost:3200,  done:false, desc:'Sales closes 25% more deals.',               apply:()=>{ G.teams.sales.buffs.push('CRM'); G.teams.sales.level++; }},
+  { id:'kb',    name:'Knowledge Base',        cost:2500,  done:false, desc:'Support resolves tickets 30% faster.',       apply:()=>{ G.teams.support.buffs.push('KB'); }},
+  { id:'cicd',  name:'CI/CD Pipeline',        cost:6000,  done:false, desc:'Dev ships 25% faster. DevOps rejoices.',     apply:()=>{ G.teams.dev.buffs.push('CI/CD'); G.teams.devops.buffs.push('CI/CD'); }},
+  { id:'sla',   name:'SLA Agreements',        cost:2800,  done:false, desc:'Churn -15%. Rep +10.',                       apply:()=>{ G.reputation=Math.min(100,G.reputation+10); }},
+  { id:'mon',   name:'Observability Stack',   cost:5000,  done:false, desc:'Catch bugs first. Debt -20.',                apply:()=>{ G.techDebt=Math.max(0,G.techDebt-20); G.teams.devops.buffs.push('MONITORING'); }},
+  { id:'hr',    name:'HR & People Ops',       cost:7000,  done:false, desc:'Hire costs -20%. Morale +15. (Terry relieved.)',apply:()=>{ G.morale=Math.min(100,G.morale+15); }},
+  { id:'iso',   name:'ISO 27001 Cert',        cost:16000, done:false, desc:'Enterprise deals unlock. Rep +20.',           apply:()=>{ G.reputation=Math.min(100,G.reputation+20); unlockA('domain'); }},
+  { id:'ai',    name:'Internal AI Tools',     cost:10000, done:false, desc:'All teams +10% eff.',                        apply:()=>{ G.morale=Math.min(100,G.morale+8); Object.values(G.teams).forEach(t=>t.buffs.push('AI')); }},
+  { id:'remote',name:'Remote-First Policy',   cost:2000,  done:false, desc:'Morale +20. Dave stops complaining.',        apply:()=>{ G.morale=Math.min(100,G.morale+20); }},
+  { id:'hack',  name:'Hackathon',             cost:5000,  done:false, desc:'Dave\'s team ships 2 features instantly.',   apply:()=>{ skipFeats(2); }},
+  { id:'part',  name:'Channel Partner Program',cost:12000,done:false, desc:'+30% sales reach via resellers.',             apply:()=>{ G.teams.sales.buffs.push('PARTNERS'); }},
+  { id:'data',  name:'EU Data Residency',     cost:20000, done:false, desc:'GDPR badge. EU enterprise deals +50%.',      apply:()=>{ G.reputation=Math.min(100,G.reputation+15); }},
 ];
 function buyUpgrade(id) {
   const u = UPGRADES.find(x=>x.id===id); if (!u||u.done) return;
@@ -289,11 +289,11 @@ function teamEff(id) {
 
 // ─── MARKETING CAMPAIGNS ──────────────────────────────────
 const MKT_CAMPAIGNS = [
-  { name:'LinkedIn Thought Leadership', cost:300,  leads:2, cooldown:120, desc:'"Rectangularo is the future." — Luke Oktoberfest on LinkedIn at 11pm.' },
-  { name:'Product Hunt Launch',         cost:500,  leads:4, cooldown:200, desc:'Sharky Simpson designed the assets. Luke wrote the tagline 5 times.' },
-  { name:'Industry Conference Booth',   cost:1200, leads:6, cooldown:300, desc:'Luke wore the branded shirt. Sharky brought holographic stickers.' },
-  { name:'Cold Email Sequence',         cost:200,  leads:3, cooldown:100, desc:'Lucas Cloakfield wrote the templates. 40% open rate (he claims).' },
-  { name:'Webinar: eSign in 2025',      cost:400,  leads:4, cooldown:150, desc:'Joe Newman wants to present. Barb Wackley fact-checks in real time.' },
+  { name:'LinkedIn Thought Leadership', cost:1200, leads:2, cooldown:120, desc:'"Rectangularo is the future." — Luke Oktoberfest on LinkedIn at 11pm.' },
+  { name:'Product Hunt Launch',         cost:2000, leads:4, cooldown:200, desc:'Sharky Simpson designed the assets. Luke wrote the tagline 5 times.' },
+  { name:'Industry Conference Booth',   cost:5000, leads:6, cooldown:300, desc:'Luke wore the branded shirt. Sharky brought holographic stickers.' },
+  { name:'Cold Email Sequence',         cost:800,  leads:3, cooldown:100, desc:'Lucas Cloakfield wrote the templates. 40% open rate (he claims).' },
+  { name:'Webinar: eSign in 2025',      cost:1500, leads:4, cooldown:150, desc:'Joe Newman wants to present. Barb Wackley fact-checks in real time.' },
 ];
 function runCampaign(idx) {
   const c = MKT_CAMPAIGNS[idx];
@@ -385,12 +385,12 @@ function devLoop() {
 }
 function testingLoop() {
   const t=G.teams.testing;
-  if (G.tick%15===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('testing')*.5);
+  if (G.tick%15===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('testing')*.2);
   t.xp+=.25; if(t.xp>=t.xpMax){t.xp=0;t.xpMax=Math.floor(t.xpMax*1.6);t.level++;log(`Testing Lv.${t.level}!`,'gr');}
 }
 function devopsLoop() {
   const t=G.teams.devops;
-  if (G.tick%20===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('devops')*.4);
+  if (G.tick%20===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('devops')*.15);
   t.xp+=.3; if(t.xp>=t.xpMax){t.xp=0;t.xpMax=Math.floor(t.xpMax*1.6);t.level++;log(`DevOps Lv.${t.level}!`,'gr');}
 }
 function deliveryLoop() {
@@ -440,7 +440,7 @@ function marketingLoop() {
 }
 function financeLoop() {
   const t=G.teams.finance;
-  if (G.tick%30===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*.3);
+  if (G.tick%30===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*.1);
   t.xp+=.15; if(t.xp>=t.xpMax){t.xp=0;t.xpMax=Math.floor(t.xpMax*1.6);t.level++;log(`Finance Lv.${t.level}!`,'gr');}
 }
 function churnLoop() {
@@ -469,8 +469,20 @@ function churnLoop() {
 function resourcesLoop() {
   G.reputation=Math.max(0,Math.min(100,G.reputation));
   G.morale=Math.max(0,Math.min(100,G.morale));
-  if (G.tick%25===0) G.techDebt+=Math.min(.8+G.monthCount*.05, 3.0); // ramps to 3× by month ~44
-  if (G.tick%80===0&&G.morale<80) G.morale+=1;
+  // Tech debt passive growth — accelerates with age (2.0/25t early → 5.0/25t late)
+  if (G.tick%25===0) G.techDebt+=Math.min(2.0+G.monthCount*.08, 5.0);
+  // Morale heals slowly (1 per 200t if under 80) — events/upgrades needed to push above 80
+  if (G.tick%200===0&&G.morale<80) G.morale+=1;
+  // High tech debt demoralises team (the codebase is killing them)
+  if (G.tick%150===0&&G.techDebt>60) G.morale=Math.max(0,G.morale-1);
+  // Ticket backlog demoralises team and damages reputation
+  const openTkts=G.tickets.filter(t=>!t.resolved).length;
+  if (G.tick%120===0&&openTkts>10) G.morale=Math.max(0,G.morale-1);
+  if (G.tick%180===0&&openTkts>15) G.reputation=Math.max(0,G.reputation-1);
+  // Slow reputation erosion — competitors exist, market moves on
+  if (G.tick%350===0&&G.reputation>30) G.reputation-=1;
+  // Severe tech debt eventually makes it to customers
+  if (G.tick%250===0&&G.techDebt>80) G.reputation=Math.max(0,G.reputation-1);
 }
 function ticketGenLoop() {
   const ageFactor=Math.min(1+G.monthCount*.04, 3.0); // ramps to 3× by month ~50
@@ -480,7 +492,7 @@ function featureReqLoop() {
   const pending=G.featureRequests.filter(r=>r.accepted===null);
   if (G.customers.length<2||pending.length>=10) return;
   if (Math.random()<.004*G.customers.length) {
-    const pool=REQ_POOL.filter(r=>!G.usedRequests.includes(r.name)&&!pend.find(x=>x.name===r.name));
+    const pool=REQ_POOL.filter(r=>!G.usedRequests.includes(r.name)&&!pending.find(x=>x.name===r.name));
     if (!pool.length) return;
     const r={...pool[Math.floor(Math.random()*pool.length)],analyzed:false,analyzing:false,accepted:null,progress:0};
     G.featureRequests.unshift(r); G.notifCount++;
@@ -650,8 +662,8 @@ function renderTeams() {
   const el=document.getElementById('teams-content');
   el.innerHTML=defs.map(td=>{
     const t=G.teams[td.id];
-    const hireCost=Math.round(200*Math.pow(1.5,t.headcount));
-    const lvlCost=Math.round(500*Math.pow(2,t.level));
+    const hireCost=Math.round(500*Math.pow(1.5,t.headcount));
+    const lvlCost=Math.round(800*Math.pow(2,t.level));
     const eff=Math.round(teamEff(td.id)*100);
     return `<div class="tp" style="border-left:3px solid ${td.color}40">
       <div class="tp-hdr">
