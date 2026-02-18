@@ -616,6 +616,119 @@ const TOOLS_EVENTS = [
 
 ];
 
+// Andre Mochalatte — COO events (the good guy fighting Joe/Theresa/Lucas)
+const ANDRE_EVENTS = [
+
+  { from:'andre', badge:'🛡️ SPRINT LOCKDOWN',
+    title:'Andre Mochalatte: "Joe, I\'ve locked the sprint. No more mid-sprint \'AI features\'. The team ships this Friday. Touch the board and I will find you."',
+    desc:'Joe Newman added 4 new tickets to the active sprint at 11pm last night. Luke Hail discovered them at standup. He went quiet for 17 seconds. Dave Rocky McHill checked his blood pressure app. Andre found out at 8:45am, removed all 4 tickets, locked the board, and sent Joe a calendar invite titled "Sprint integrity: a one-on-one."',
+    choices:[
+      { label:'✅ Back Andre — protected sprint, full delivery', cls:'gr',
+        effect:'Dev morale +15. Sprint ships on time. Joe\'s one-on-one lasts 2 hours.',
+        action:()=>{ G.morale+=15; log('The sprint shipped. All 8 tickets. On Friday. On time. Luke Hail said "thank you" to Andre in a Slack DM. Andre replied with a thumbs up. Dave Rocky McHill cried a little.','gr'); }},
+      { label:'🤷 Let Joe add the tickets — \'it\'s just 4 things\'', cls:'re',
+        effect:'Dev debuff 40s. Morale -15. Nothing ships.',
+        action:()=>{ applyDebuff('dev','🔥 MID-SPRINT CHAOS',40); G.morale-=15; log('The sprint did not ship. 2 of Joe\'s 4 tickets were duplicates of existing features. 1 was "make it pop." Luke Hail has requested a 1-week vacation, effective immediately.','re'); }},
+    ]},
+
+  { from:'andre', badge:'📞 SALES INTERVENTION',
+    title:'Andre Mochalatte just called Lucas Cloakfield\'s client and apologized. Apparently Lucas promised "full ERP integration in 6 weeks." That feature does not exist. It has never existed.',
+    desc:'Lucas closed a €180K enterprise deal. The contract mentions "complete ERP integration via open API" by end of Q1. Andre read the contract at 9am. He Slacked Luke Hail. Luke Hail replied with a photo of his own face. Andre then called the client directly, explained the timeline was "aspirational," and negotiated a phased delivery plan. Lucas is furious.',
+    choices:[
+      { label:'👏 Support Andre\'s fix — phased delivery plan', cls:'gr',
+        effect:'Rep +3. Morale +10. The client stays. Lucas is not pleased.',
+        action:()=>{ G.reputation+=3; G.morale+=10; log('The client accepted a phased ERP delivery plan. Q1: data export API. Q2: import hooks. Q3: actual integration. They are satisfied. Lucas Cloakfield has described Andre\'s intervention as "frankly unnecessary." Andre has said nothing.','gr'); }},
+      { label:'💸 Honor Lucas\'s promise — all-hands on ERP', cls:'re',
+        effect:'Dev debuff 60s. Morale -20. Debt +25. All other work stops.',
+        action:()=>{ applyDebuff('dev','🔗 ERP DEATH MARCH',60); G.morale-=20; G.techDebt+=25; log('The team dropped everything for ERP integration. 6 weeks of work delivered an API that connects to one ERP system. The client uses a different one. Lucas: "I said open API. That\'s open." Luke Hail has submitted his notice. Dave got him to stay. Barely.','re'); }},
+    ]},
+
+  { from:'andre', badge:'✂️ CFO STANDOFF',
+    title:'Theresa Shackles wants to eliminate the QA team. "Testing can be crowdsourced. The customers will find the bugs." Andre is blocking her.',
+    desc:'Theresa presented a cost reduction slide at the leadership meeting. Slide 7: "QA team — redundant function, €18K/month savings." Sarah Frost was in the meeting. She has not spoken since. Andre stood up and delivered a 12-minute rebuttal. He cited 3 incidents from last quarter where QA caught critical bugs before production. Theresa called this "anecdotal." Andre called her spreadsheet "dangerous."',
+    choices:[
+      { label:'🛡️ Back Andre — QA stays', cls:'gr',
+        effect:'Morale +15. Rep +2. Theresa\'s slide is shelved.',
+        action:()=>{ G.morale+=15; G.reputation+=2; log('QA stays. Sarah Frost sent Andre a Slack message: "Thank you." Andre replied: "Don\'t thank me, ship faster." Sarah Frost has increased test coverage to 87%. Theresa\'s slide has been archived. Theresa is not done.','gr'); }},
+      { label:'💀 Side with Theresa — save €18K/month', cls:'re',
+        effect:'QA dissolved. Cash +€18K/mo. But bugs hit prod. Rep -10. Morale -25.',
+        action:()=>{ G.cash+=18000; G.reputation-=10; G.morale-=25; G.techDebt+=30; log('QA team is dissolved. Month 1: 3 critical bugs in production. One customer lost. Month 2: a login bug exposes user emails for 6 hours. Lucas calls it "a learning opportunity." Andre has gone very quiet.','re'); }},
+    ]},
+
+  { from:'andre', badge:'🎤 CONFERENCE AMBUSH',
+    title:'Andre just found out Joe volunteered the dev team for a live coding demo at EuroTech Summit. In 3 weeks. Nobody told the dev team.',
+    desc:'Joe Newman\'s LinkedIn post (47 likes): "Thrilled to announce Rectangularo will be doing a LIVE coding demo at EuroTech Summit 2025 🚀 Watch our incredible engineers build features in real time! This is innovation in motion." Luke Hail saw it via a Google Alert. He forwarded it to Andre with the subject line "please help." Andre has requested an emergency meeting with Joe.',
+    choices:[
+      { label:'🤝 Andre negotiates — pre-recorded demo, not live', cls:'gr',
+        effect:'Morale +5. Rep +3. Team gets 3 weeks to prep a clean recording.',
+        action:()=>{ G.morale+=5; G.reputation+=3; log('Andre negotiated with Joe: pre-recorded demo, 8-minute reel, professionally edited. Luke Hail builds a clean demo environment. The audience sees a flawless product. Joe introduces it as "live." Andre lets it go.','gr'); }},
+      { label:'🎲 Let it happen — live coding, raw and real', cls:'mx',
+        effect:'50/50: Rep +10 & Morale +20 on triumph, or Rep -15 & Morale -20 on disaster.',
+        action:()=>{ if(Math.random()<.5){ G.reputation+=10; G.morale+=20; log('The live demo worked. Luke Hail typed flawlessly. Wes Wonder\'s CSS was immaculate. The crowd cheered. Joe took a bow. Andre stood at the back. Luke Hail: "Never again." Andre: "Agreed."','gr'); } else { G.reputation-=15; G.morale-=20; log('The live demo broke 4 minutes in. Luke Hail\'s laptop lost WiFi. Wes Wonder\'s CSS was on the wrong branch. Joe said "this is real engineering, folks." The crowd was not convinced. Andre drove home in silence.','re'); } }},
+    ]},
+
+  { from:'andre', badge:'📊 BUDGET WAR',
+    title:'Andre Mochalatte won a budget negotiation with Theresa Shackles. Engineering gets €12K for tooling. It took 6 weeks and 4 spreadsheets.',
+    desc:'Andre submitted the tooling budget request on January 14th. Theresa returned it with 23 comments. Andre revised. Theresa added 11 more comments. Andre revised again. Theresa said it lacked "strategic alignment." Andre wrote a 3-page strategic alignment document. Theresa approved €10K. Andre negotiated to €12K. He sent the team a Slack message: "Tools budget approved. Don\'t waste it."',
+    choices:[
+      { label:'🛠️ Invest in dev tooling — CI/CD, monitoring, infrastructure', cls:'gr',
+        effect:'Debt -15. Dev morale +20. Everything gets faster.',
+        action:()=>{ G.techDebt=Math.max(0,G.techDebt-15); G.morale+=20; log('The €12K is spent: new CI/CD pipeline, error monitoring, load testing suite. Luke Hail: "The pipeline is beautiful." Dave Rocky McHill: "We ship twice as fast." Theresa: "I\'d like to see the ROI in Q3."','gr'); }},
+      { label:'📋 Buy Confluence Premium + Jira Advanced', cls:'re',
+        effect:'Morale -10. Nothing improves. Joe loves the new dashboards.',
+        action:()=>{ G.morale-=10; log('The budget goes to Confluence Premium and Jira Advanced Roadmaps. There are now 14 new dashboard views. Joe made a custom Epic velocity chart. Nothing is faster. Luke Hail has looked at the pipeline and then at the dashboards and said nothing for a long time.','re'); }},
+    ]},
+
+  { from:'andre', badge:'📢 CEO AI DECREE',
+    title:'Joe Newman announced a company pivot to "AI-first" on LinkedIn at 11pm. Andre found out at 6am. The engineering team found out via a client email.',
+    desc:'Joe\'s LinkedIn post got 312 likes and 4 press mentions. By 7am, two enterprise clients emailed asking about the AI roadmap. Luke Hail Slacked Andre: "What is our AI roadmap." Andre had no answer. He called Joe. Joe said "it\'s a direction, not a product." Andre: "Our clients are asking for a product." Joe: "Tell them it\'s coming." Andre: "When?" Joe: "Q2." Andre: "It is Q1." Joe: "Q2 is soon."',
+    choices:[
+      { label:'🤝 Andre manages clients — honest framing, buys time', cls:'gr',
+        effect:'Rep holds. Morale +5. Andre writes a real AI strategy doc.',
+        action:()=>{ G.morale+=5; log('Andre sent each client a calm email: "Our AI integration is in scoping phase. We\'ll share a roadmap by Q2." He then wrote a 4-page AI strategy doc. It contains 2 real ideas. Luke Hail called them "actually doable." This is the first time Luke has called anything doable.','gr'); }},
+      { label:'🚀 Commit to the pivot — AI features by Q2', cls:'re',
+        effect:'Morale -20. Debt +30. Rep -5. Q2 arrives. Nothing is AI.',
+        action:()=>{ G.morale-=20; G.techDebt+=30; G.reputation-=5; log('Q2 arrived. The AI feature is a keyword search with "AI-powered" in the label. One client noticed. Joe called it "a foundation." Andre did not attend that call.','re'); }},
+    ]},
+
+  { from:'andre', badge:'📋 CONTRACT CLEANUP',
+    title:'Andre discovered Lucas Cloakfield has been signing clients to contracts that include "unlimited custom development." Andre has quietly been rewriting them for 3 weeks.',
+    desc:'During a quarterly legal review, Andre found 7 active contracts with the clause "unlimited customisation as required by client." Lucas wrote this clause himself. He calls it "a relationship builder." Andre has been individually renegotiating each contract. He is on client 5. He has not told Joe. He has not told Lucas. He told Dave Rocky McHill, who said "I knew something was wrong" and then sat down.',
+    choices:[
+      { label:'✅ Let Andre finish quietly — fix all 7 contracts', cls:'gr',
+        effect:'Rep +5. Morale +10. Lucas never knows. The team is safe.',
+        action:()=>{ G.reputation+=5; G.morale+=10; log('All 7 contracts rewritten. 6 clients accepted revised scoping language. 1 client pushed back and got a 10% discount. Andre absorbed it from contingency. Lucas Cloakfield signed 2 new contracts this week. Andre has requested read-only access to Lucas\'s Docusign account.','gr'); }},
+      { label:'🔥 Surface it — confront Lucas and Joe in a meeting', cls:'mx',
+        effect:'Morale -5. Debt -10 (scope clarified). Rep +2. Lucas is officially angry.',
+        action:()=>{ G.morale-=5; G.techDebt=Math.max(0,G.techDebt-10); G.reputation+=2; log('Andre presented the 7 contracts in a leadership meeting. Lucas called it "a process issue." Joe called it "a growth mindset." Theresa asked why it took 3 weeks to surface. The contracts were fixed. Lucas now sends all contracts to Andre before signing. He is not happy about it. Andre is fine.','in'); }},
+    ]},
+
+  { from:'andre', badge:'🧘 THE QUIET WIN',
+    title:'Andre blocked Joe from adding a mandatory 7am "culture standup" to the entire company calendar. Nobody knows he did this.',
+    desc:'Joe drafted a recurring calendar event: "Company Culture Kick-Off Standup — 7:00am, daily, all staff, cameras on." Andre found it in the shared calendar draft queue. He declined it, spoke to Joe privately, and proposed a bi-weekly all-hands at 10am instead. Joe agreed. The event was never sent. The team does not know it was nearly their reality. Terry Stroll: "Joe seems more energized lately." Andre: "Yes."',
+    choices:[
+      { label:'🤫 Keep it quiet — Andre protects and says nothing', cls:'gr',
+        effect:'Morale +20. Nobody burns out. The team never knows what was avoided.',
+        action:()=>{ G.morale+=20; log('The 7am standup never happened. The team ships normally. Luke Hail arrives at 9:30am as usual. Wes Wonder: "Things feel good lately." Dave Rocky McHill: "I know." He doesn\'t know. Andre knows. Andre says nothing.','gr'); }},
+      { label:'📣 Tell the team — let them know Andre saved them', cls:'mx',
+        effect:'Morale +10. Rep +2. Joe is embarrassed. Andre is uncomfortable.',
+        action:()=>{ G.morale+=10; G.reputation+=2; log('Andre mentioned it in a team retrospective: "I blocked a 7am daily standup last month. You\'re welcome." Silence. Then Luke Hail started clapping. Then everyone clapped. Joe was not in the retro. He found out via a Slack thread. He posted "leadership is hard 💪" on LinkedIn. 89 likes.','in'); }},
+    ]},
+
+  { from:'andre', badge:'💰 HIRING FREEZE',
+    title:'Theresa announced a hiring freeze. Andre negotiated one exception: a senior backend hire. Theresa approved it. Joe then announced 4 open roles on LinkedIn.',
+    desc:'Theresa\'s hiring freeze memo: "Effective immediately, no new headcount. Exceptions require CFO sign-off and a business case of >6 pages." Andre wrote 8 pages and got one senior backend role approved. Three hours later, Joe posted "We\'re hiring! 4 senior engineers, 1 product manager, 1 DevOps lead 🚀" on LinkedIn. Theresa called Andre. Andre did not answer immediately.',
+    choices:[
+      { label:'🛡️ Andre manages Joe — pulls the posts, keeps the 1 real hire', cls:'gr',
+        effect:'Morale +10. The approved hire happens. Joe\'s posts come down quietly.',
+        action:()=>{ G.morale+=10; log('Andre spoke to Joe privately. The 5 extra job posts were removed "due to restructuring." Andre\'s approved backend hire started 6 weeks later. Luke Hail described them as "competent and calm." This is the best review Luke gives. Theresa asked why the posts were up. Andre: "Miscommunication." Joe posted "great things coming 👀" on LinkedIn. 104 likes.','gr'); }},
+      { label:'🤷 Let all 6 roles be filled — growth is good', cls:'re',
+        effect:'Cash -€80K/mo. Theresa furious. Budget crisis next quarter.',
+        action:()=>{ G.cash-=80000; G.morale-=10; log('All 6 roles were filled. Monthly burn increased by €80K. Theresa presented a revised runway slide in Q2. It was not optimistic. Joe called it "an investment in talent." Andre stared at the slide for a long time and said nothing. The new hires are good. The runway is not.','re'); }},
+    ]},
+
+];
+
 // Merge all events into one array used by the engine
 // To add a new event, add it to the appropriate array above
 const ALL_EVENTS = [
@@ -626,4 +739,5 @@ const ALL_EVENTS = [
   ...MARKETING_EVENTS,
   ...DEV_EVENTS,
   ...TOOLS_EVENTS,
+  ...ANDRE_EVENTS,
 ];
