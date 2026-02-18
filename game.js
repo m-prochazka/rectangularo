@@ -400,7 +400,21 @@ function analystLoop() {
   G.featureRequests.forEach(r=>{
     if(r.analyzing&&!r.analyzed){
       r.progress+=G.teams.analyst.headcount*G.teams.analyst.level*.4;
-      if(r.progress>=r.at*10){r.analyzing=false;r.analyzed=true;log(`🔬 Analysis done: "${r.name}" — ${r.good?'RECOMMEND ✅':'REJECT ❌'}`,r.good?'gr':'ye');updBadges();renderRP();}
+      if(r.progress>=r.at*10){
+        r.analyzing=false; r.analyzed=true; r.accepted=true;
+        const effort=r.at*10+Math.floor(Math.random()*20);
+        if(r.good){
+          G.reputation+=3;
+          DEV_Q.push({name:r.name,effort:effort,done:false,cat:'Feature Request',effect:()=>{G.reputation+=Math.floor(effort/20);G.morale+=5;log(`✨ "${r.name}" shipped! Morale +5, Rep +${Math.floor(effort/20)}`,'sh');}});
+          log(`🔬 Barb: "${r.name}" — RECOMMENDED ✅ → Queued for dev (effort: ${effort})`,'gr');
+        } else {
+          G.morale-=10; G.techDebt+=10;
+          DEV_Q.push({name:r.name,effort:effort,done:false,cat:'Feature Request',effect:()=>{G.morale+=3;log(`✨ "${r.name}" shipped (management insisted).`,'ye');}});
+          log(`🔬 Barb: "${r.name}" — NOT RECOMMENDED ⚠️ → Queued anyway (Morale -10, Debt +10)`,'ye');
+        }
+        updBadges(); renderRP();
+        if(G.currentView==='features') renderFeatures();
+      }
     }
   });
   G.teams.analyst.xp+=.2; const at=G.teams.analyst; if(at.xp>=at.xpMax){at.xp=0;at.xpMax=Math.floor(at.xpMax*1.6);at.level++;log(`Analyst Lv.${at.level}!`,'gr');}
@@ -737,45 +751,11 @@ function renderRequests() {
     <div class="rer-nm">${r.name}</div>
     <div class="rer-ds">${r.desc}</div>
     ${r.analyzing?`<div class="pw pw6 mb3"><div class="pf pc" style="width:${Math.min(100,(r.progress/(r.at*10))*100)}%"></div></div><div style="font-family:var(--mo);font-size:var(--fmn);color:var(--cy)">Barb Wackley reviewing...</div>`:''}
-    ${r.analyzed&&r.accepted===null?`<div class="fr mt3"><span style="font-size:var(--fmn);font-family:var(--mo);${r.good?'color:var(--gr)':'color:var(--re)'}">${r.good?'✅ RECOMMENDED':'❌ NOT RECOMMENDED'}</span><button class="btn gr" onclick="acceptReq(${i})">ACCEPT</button><button class="btn re" onclick="rejectReq(${i})">REJECT</button></div>`:''}
-    ${r.accepted===true?`<div style="font-family:var(--mo);font-size:var(--fmn);color:var(--gr);margin-top:calc(3px*var(--s))">✅ Accepted — added to discussion with Dave</div>`:''}
-    ${r.accepted===false?`<div style="font-family:var(--mo);font-size:var(--fmn);color:var(--re);margin-top:calc(3px*var(--s))">🚫 Rejected by Barb Wackley</div>`:''}
+    ${r.accepted===true?`<div style="font-family:var(--mo);font-size:var(--fmn);color:${r.good?'var(--gr)':'var(--ye)'};margin-top:calc(3px*var(--s))">${r.good?'✅ RECOMMENDED → queued for dev':'⚠️ NOT RECOMMENDED → queued anyway (Morale -10, Debt +10)'}</div>`:''}
     ${!r.analyzed&&!r.analyzing&&r.accepted===null?`<button class="btn cy mt3" onclick="analyzeReq(${i})">🔬 ANALYZE</button>`:''}
   </div>`).join('')||`<div style="font-family:var(--mo);font-size:var(--fmn);color:var(--tm);padding:calc(6px*var(--s))">No requests yet. Get more customers!</div>`;
 }
 function analyzeReq(i){const r=G.featureRequests[i];if(!r||r.analyzing||r.analyzed)return;r.analyzing=true;log(`🔬 Barb Wackley analysing: "${r.name}"`,'in');renderRequests();renderRP();}
-function acceptReq(i){
-  const r=G.featureRequests[i];
-  if(!r||!r.analyzed)return;
-  r.accepted=true;
-
-  if(r.good){
-    G.reputation+=3;
-    // Add to dev backlog
-    const effort = r.at * 10 + Math.floor(Math.random()*20);
-    DEV_Q.push({
-      name: r.name,
-      effort: effort,
-      done: false,
-      cat: 'Feature Request',
-      effect: () => {
-        G.reputation += Math.floor(effort/20);
-        G.morale += 5;
-        log(`✨ "${r.name}" shipped! Team morale +5, Rep +${Math.floor(effort/20)}`,'sh');
-      }
-    });
-    log(`✅ Feature "${r.name}" accepted & added to dev backlog (${effort} effort)`,'gr');
-  } else {
-    G.morale-=10;
-    G.techDebt+=10;
-    log(`⚠️ Feature "${r.name}" accepted (Barb warned us)`,'ye');
-  }
-
-  renderRequests();
-  renderRP();
-  if(G.currentView==='features') renderFeatures();
-}
-function rejectReq(i){const r=G.featureRequests[i];if(!r||!r.analyzed)return;r.accepted=false;if(!r.good){G.reputation+=2;}else{G.reputation-=2;}log(`🚫 Feature "${r.name}" rejected`,r.good?'ye':'gr');renderRequests();renderRP();}
 
 function renderMarketing() {
   const el=document.getElementById('mkt-content');
@@ -937,7 +917,7 @@ function renderRP(tab) {
       <div style="font-size:var(--fsm)">${r.name}</div>
       <div style="font-family:var(--mo);font-size:var(--fmn);color:var(--tm);margin-top:calc(2px*var(--s))">${r.desc}</div>
       ${r.analyzing?`<div class="pw pw6 mt3"><div class="pf pc" style="width:${Math.min(100,(r.progress/(r.at*10))*100)}%"></div></div>`:''}
-      ${r.analyzed&&r.accepted===null?`<div class="fr mt3"><span style="font-family:var(--mo);font-size:calc(10px*var(--s));${r.good?'color:var(--gr)':'color:var(--re)'}">${r.good?'✅':'❌'}</span><button class="btn gr" onclick="acceptReq(${ri})" style="padding:calc(2px*var(--s)) calc(4px*var(--s))">ACC</button><button class="btn re" onclick="rejectReq(${ri})" style="padding:calc(2px*var(--s)) calc(4px*var(--s))">REJ</button></div>`:''}
+      ${r.accepted===true?`<div style="font-family:var(--mo);font-size:calc(9px*var(--s));color:${r.good?'var(--gr)':'var(--ye)'};margin-top:calc(2px*var(--s))">${r.good?'✅ Queued for dev':'⚠️ Queued (Barb warned us)'}</div>`:''}
       ${!r.analyzed&&!r.analyzing?`<button class="btn cy mt3" onclick="analyzeReq(${ri})" style="padding:calc(2px*var(--s)) calc(5px*var(--s))">🔬 ANALYZE</button>`:''}
     </div>`;
   }).join('')||`<div style="font-family:var(--mo);font-size:var(--fmn);color:var(--tm);padding:calc(5px*var(--s))">No pending requests.</div>`;
