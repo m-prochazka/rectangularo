@@ -417,6 +417,10 @@ function analystLoop() {
       }
     }
   });
+  // Trim processed requests so the array doesn't grow forever — keep pending + last 5 done
+  const pend=G.featureRequests.filter(r=>r.accepted===null);
+  const done=G.featureRequests.filter(r=>r.accepted!==null).slice(-5);
+  if(pend.length+done.length<G.featureRequests.length) G.featureRequests=[...pend,...done];
   G.teams.analyst.xp+=.2; const at=G.teams.analyst; if(at.xp>=at.xpMax){at.xp=0;at.xpMax=Math.floor(at.xpMax*1.6);at.level++;log(`Analyst Lv.${at.level}!`,'gr');}
 }
 function marketingLoop() {
@@ -463,9 +467,10 @@ function ticketGenLoop() {
   if (G.customers.length&&Math.random()<.006*G.customers.length) genTicket();
 }
 function featureReqLoop() {
-  if (G.customers.length<2||G.featureRequests.length>=10) return;
+  const pending=G.featureRequests.filter(r=>r.accepted===null);
+  if (G.customers.length<2||pending.length>=10) return;
   if (Math.random()<.004*G.customers.length) {
-    const pool=REQ_POOL.filter(r=>!G.featureRequests.find(x=>x.name===r.name));
+    const pool=REQ_POOL.filter(r=>!pending.find(x=>x.name===r.name));
     if (!pool.length) return;
     const r={...pool[Math.floor(Math.random()*pool.length)],analyzed:false,analyzing:false,accepted:null,progress:0};
     G.featureRequests.unshift(r); G.notifCount++;
