@@ -559,6 +559,7 @@ function checkThresholds() {
 
 function triggerThresholdEvent() {
   const ev=G.activeEvent;
+  const wasAlreadyPaused=G.paused; G.paused=true;
   const ch=CHARS[ev.from]||CHARS.joe;
   document.getElementById('ev-av').textContent=ch.emoji;
   document.getElementById('ev-nm').textContent=ch.name;
@@ -570,7 +571,7 @@ function triggerThresholdEvent() {
   ev.choices.forEach(c=>{
     const d=document.createElement('div'); d.className='ev-c';
     d.innerHTML=`<span class="ev-cl">${c.label}</span><span class="ev-ce ${c.cls}">${c.effect}</span>`;
-    d.onclick=()=>{ c.action(); G.activeEvent=null; G.lastEventTick=G.tick; document.getElementById('ev-modal').classList.remove('show'); };
+    d.onclick=()=>{ c.action(); G.activeEvent=null; G.lastEventTick=G.tick; document.getElementById('ev-modal').classList.remove('show'); G.paused=wasAlreadyPaused; };
     el.appendChild(d);
   });
   document.getElementById('ev-modal').classList.add('show');
@@ -583,6 +584,7 @@ function triggerEvent() {
   if (G.activeEvent||!ALL_EVENTS?.length) return;
   const ev=ALL_EVENTS[Math.floor(Math.random()*ALL_EVENTS.length)];
   G.activeEvent=ev;
+  const wasAlreadyPaused=G.paused; G.paused=true;
   const ch=CHARS[ev.from]||CHARS.joe;
   document.getElementById('ev-av').textContent=ch.emoji;
   document.getElementById('ev-nm').textContent=ch.name;
@@ -594,7 +596,7 @@ function triggerEvent() {
   ev.choices.forEach(c=>{
     const d=document.createElement('div'); d.className='ev-c';
     d.innerHTML=`<span class="ev-cl">${c.label}</span><span class="ev-ce ${c.cls}">${c.effect}</span>`;
-    d.onclick=()=>{ c.action(); G.activeEvent=null; G.lastEventTick=G.tick; document.getElementById('ev-modal').classList.remove('show'); };
+    d.onclick=()=>{ c.action(); G.activeEvent=null; G.lastEventTick=G.tick; document.getElementById('ev-modal').classList.remove('show'); G.paused=wasAlreadyPaused; };
     el.appendChild(d);
   });
   document.getElementById('ev-modal').classList.add('show');
