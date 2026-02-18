@@ -244,17 +244,6 @@ const ADDON_CATS = [
   { id:'integration', label:'🔌 Integrations' },
 ];
 function unlockA(id) { if (ADDONS[id]) ADDONS[id].unlocked = true; }
-function sellAddon(id) {
-  const a = ADDONS[id]; if (!a||!a.unlocked) return;
-  if (!G.customers.length) { toast('No customers!','re'); return; }
-  const el = G.customers.filter(c=>!c.addons.find(x=>x.id===id));
-  if (!el.length) { toast('All customers have this!','ye'); return; }
-  const c = el[Math.floor(Math.random()*el.length)];
-  c.addons.push({ id, name:a.name, rev:a.rev }); a.sold++; G.cash+=a.price; G.addonsSold++;
-  log(`💎 Sold ${a.name} to ${c.name} +€${a.price}`, 'gr');
-  toast(`💎 ${a.name} → ${c.name}!`, 'gr');
-  if (G.currentView==='addons') renderAddons();
-}
 
 // ─── UPGRADES ─────────────────────────────────────────────
 const UPGRADES = [
@@ -353,6 +342,17 @@ function salesLoop() {
   if (t.progress>=100) {
     t.progress=0;
     if (Math.random()<.25+G.reputation/250) addCustomer();
+    // Sales team pitches unlocked addons to customers who don't have them yet
+    const targets=Object.entries(ADDONS).filter(([id,a])=>a.unlocked&&G.customers.some(c=>!c.addons.find(x=>x.id===id)));
+    if (targets.length&&Math.random()<.4) {
+      const [id,a]=targets[Math.floor(Math.random()*targets.length)];
+      const eligible=G.customers.filter(c=>!c.addons.find(x=>x.id===id));
+      const c=eligible[Math.floor(Math.random()*eligible.length)];
+      c.addons.push({id,name:a.name,rev:a.rev}); a.sold++; G.cash+=a.price; G.addonsSold++;
+      log(`💎 Sales: ${a.name} → ${c.name} (+€${a.price}${a.rev?' +€'+a.rev+'/mo':''})`, 'gr');
+      toast(`💎 ${a.name} → ${c.name}!`, 'gr');
+      if(G.currentView==='addons') renderAddons();
+    }
     t.xp+=10; if(t.xp>=t.xpMax){t.xp=0;t.xpMax=Math.floor(t.xpMax*1.6);t.level++;log(`Sales Lv.${t.level}!`,'gr');}
   }
 }
@@ -727,17 +727,24 @@ function renderFeatures() {
 function renderAddons() {
   const el=document.getElementById('addon-list');
   el.innerHTML=ADDON_CATS.map(cat=>{
-    const items=Object.values(ADDONS).filter(a=>a.cat===cat.id);
+    const items=Object.entries(ADDONS).filter(([,a])=>a.cat===cat.id);
     return `<div style="margin-bottom:calc(12px*var(--s))">
       <div class="adr-cat">${cat.label}</div>
-      ${items.map(a=>`<div class="adr ${a.unlocked?'':'lk'}">
-        <div class="adr-nm">${a.name} ${!a.unlocked?'<span style="font-size:var(--fxs);color:var(--tm)">[🔒 DEV REQUIRED]</span>':''}</div>
-        <div class="adr-ds">${a.desc}</div>
-        <div class="adr-ft">
-          <div><span class="adr-pr">€${a.price}${a.rev?' + €'+a.rev+'/mo':''}</span><span style="font-size:calc(10px*var(--s));color:var(--tm);margin-left:calc(6px*var(--s))">Sold: ${a.sold}</span></div>
-          ${a.unlocked?`<button class="btn pu" onclick="sellAddon('${Object.keys(ADDONS).find(k=>ADDONS[k]===a)}')">SELL</button>`:`<span style="font-size:calc(10px*var(--s));color:var(--tm)">Ship to unlock</span>`}
-        </div>
-      </div>`).join('')}
+      ${items.map(([id,a])=>{
+        let status;
+        if (!a.unlocked) status=`<span style="font-size:calc(10px*var(--s));color:var(--tm)">🔒 Ship to unlock</span>`;
+        else if (!G.customers.length) status=`<span style="font-size:calc(10px*var(--s));color:var(--tm)">No customers yet</span>`;
+        else if (G.customers.some(c=>!c.addons.find(x=>x.id===id))) status=`<span style="font-size:calc(10px*var(--s));color:var(--ye)">📞 Sales pitching</span>`;
+        else status=`<span style="font-size:calc(10px*var(--s));color:var(--gr)">✓ All customers covered</span>`;
+        return `<div class="adr ${a.unlocked?'':'lk'}">
+          <div class="adr-nm">${a.name}</div>
+          <div class="adr-ds">${a.desc}</div>
+          <div class="adr-ft">
+            <div><span class="adr-pr">€${a.price}${a.rev?' + €'+a.rev+'/mo':''}</span><span style="font-size:calc(10px*var(--s));color:var(--tm);margin-left:calc(6px*var(--s))">Sold: ${a.sold}</span></div>
+            ${status}
+          </div>
+        </div>`;
+      }).join('')}
     </div>`;
   }).join('');
 }
@@ -1049,6 +1056,7 @@ function gameLoop() {
   if(G.currentView==='leadership')renderLeadership();
   if(G.currentView==='reports')   renderReports();
   if(G.currentView==='regions')   renderRegions();
+  if(G.currentView==='addons')    renderAddons();
   if(G.tick%5===0) renderRP();
   if(G.tick%35===0){updateTicker();checkWin();}
 }
