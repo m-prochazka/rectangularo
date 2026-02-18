@@ -240,8 +240,10 @@ const LEADERSHIP_EVENTS = [...]   // Dave, Barb, Sarah, Terry, Andre, Theresa
 const DELIVERY_EVENTS = [...]     // Atom, David
 const SUPPORT_EVENTS = [...]      // Kate, Michael Stroll
 const MARKETING_EVENTS = [...]    // Luke O, Sharky
+const DEV_EVENTS = [...]          // Luke Hail, Wes Wonder — backend/frontend disasters
+const TOOLS_EVENTS = [...]        // Jira, Confluence, Odoo chaos — various characters
 
-const ALL_EVENTS = [...CEO_EVENTS, ...LEADERSHIP_EVENTS, ...]  // 22 total, randomly triggered
+const ALL_EVENTS = [...CEO_EVENTS, ...LEADERSHIP_EVENTS, ...]  // 44 total, randomly triggered
 
 const THRESHOLD_EVENTS = { ... }  // 4 events, triggered by metric thresholds (NOT in ALL_EVENTS)
 ```
@@ -264,7 +266,7 @@ const THRESHOLD_EVENTS = { ... }  // 4 events, triggered by metric thresholds (N
 }
 ```
 
-### Current events (22 random + 4 threshold = 26 total)
+### Current events (44 random + 4 threshold = 48 total)
 **CEO Events (5):** AI LinkedIn decree, Lucas promised a non-existent feature, VC demo, SignMaster 3000 competitor, SaaStock conference promises
 
 **Leadership Events (7):** Andre's RTO mandate, Theresa cancels Christmas party, Terry approves vacations nobody asked for, Terry creates "Feelings Anonymous" Slack channel, Dave's tech debt crisis, Barb's 40-slide "No" deck, Sarah finds 14 bugs (Dave says 3 are features)
@@ -274,6 +276,10 @@ const THRESHOLD_EVENTS = { ... }  // 4 events, triggered by metric thresholds (N
 **Support Events (2):** Michael Stroll — bank wants beige app (sell branding addon!), Kate at her limit after colour complaint tickets
 
 **Marketing Events (2):** Luke's post accidentally promoted a competitor, Sharky's legally questionable competitor teardown
+
+**Dev Events (9):** Luke Hail — backend is a 47-tab Excel file, no staging (only production), auth is `email.includes('@')`, zero DB indexes, Pavel's 2019 TODO comment, Pavel's Ghost (DB in ex-employee's Docker), Wes Wonder — 18K-line CSS with `.thing`, jQuery triple-stacked on React, z-index disaster (47 values above 9000), aggressive button complaint
+
+**Tools Events (9):** Joe creates 63 undescribed Jira tickets (all CRITICAL), 340 In Progress tickets / fake velocity, someone sets all story points to 1, Terry discovers Confluence (documents the feelings), Andre's architecture doc says TBD since 2021, Confluence onboarding loop, Theresa moves everything to Odoo, Odoo sends invoices to wrong customers, Joe's Blockchain Epic (0 user stories), Andre's 4-word Operational Excellence Framework
 
 **Threshold Events (4, metric-triggered):**
 - Tech Debt Crisis (debt > 100): Dave emergency refactor
@@ -309,7 +315,7 @@ Threshold events have a 3,000–5,000 tick cooldown before re-triggering.
 - [ ] Feature requests added via analyst are not saved/restored by the save system (only original 15 tracked by index)
 - [ ] No sound effects
 - [ ] No achievements system
-- [ ] Wes Wonder and Luke Hail don't have unique events yet
+- [x] Wes Wonder and Luke Hail have unique events (DEV_EVENTS array)
 - [ ] Lucas Cloakfield could have more sales-related events
 - [ ] Marketing campaigns don't affect reputation (only customer count)
 - [ ] Terry Stroll events could trigger more frequently (they're beloved)

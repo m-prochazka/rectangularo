@@ -366,6 +366,256 @@ const THRESHOLD_EVENTS = {
   }
 };
 
+// ─── DEV TEAM EVENTS ───────────────────────────────────────
+const DEV_EVENTS = [
+
+  { from:'luke_h', badge:'🔧 BACKEND INCIDENT',
+    title:'Luke Hail: "The entire backend data model is a 47-tab Excel spreadsheet. One tab is called \'FINAL_v3_REAL_USE_THIS\'."',
+    desc:'Luke Hail opened the repository and found an Excel file named `backend_schema_FINAL_v3_REAL_USE_THIS_2022.xlsx`. Tab 1 is users. Tab 23 is "other stuff." Tab 47 is blank except for one cell that says "ask Pavel." Pavel left in 2021.',
+    choices:[
+      { label:'🔁 Migrate to a real database', cls:'mx',
+        effect:'Dev REFACTOR 90s. Debt -30. Luke morale +25. Pavel cannot be asked.',
+        action:()=>{ applyDebuff('dev','📊 EXCEL MIGRATION',90); G.techDebt=Math.max(0,G.techDebt-30); G.morale+=25; log('Luke Hail: "It is done. The Excel is gone. I feel like a new man." Dave Rocky McHill is weeping with relief.','gr'); }},
+      { label:'🧩 Keep the Excel — it works, technically', cls:'re',
+        effect:'Debt +35. Morale -15. But nothing breaks today. Pavel would be proud.',
+        action:()=>{ G.techDebt+=35; G.morale-=15; log('Luke Hail: "Fine. I have added FINAL_v3_REAL_USE_THIS_v2.xlsx. I need a drink." The Excel persists.','re'); }},
+    ]},
+
+  { from:'luke_h', badge:'🔧 BACKEND INCIDENT',
+    title:'Luke Hail: "There is no staging environment. There is only production."',
+    desc:'Luke tried to push a fix to staging. There is no staging. There has never been a staging environment. Dave Rocky McHill says "we\'ve been shipping straight to prod since 2020." Luke Hail has opened a new tab with job listings.',
+    choices:[
+      { label:'🖥️ Set up a proper staging environment', cls:'gr',
+        effect:'Cash -€300. Dev debuff 40s (setup time). Debt -10. Future Luke will thank you.',
+        action:()=>{ G.cash-=300; applyDebuff('dev','🖥️ STAGING SETUP',40); G.techDebt=Math.max(0,G.techDebt-10); log('Luke Hail: "Staging is live. We are no longer cowboys." Dave Rocky McHill: "I miss the cowboys era."','gr'); }},
+      { label:'🤠 Embrace cowboy culture — YOLO to prod', cls:'re',
+        effect:'Debt +20. Morale -10 (Luke specifically). But saves €300 and 40 seconds.',
+        action:()=>{ G.techDebt+=20; G.morale-=10; log('Luke Hail commits message: "yolo". Dave: "We are professionals." Sarah Lawton has updated her bug count.','re'); }},
+    ]},
+
+  { from:'luke_h', badge:'🔧 BACKEND DISCOVERY',
+    title:'Luke Hail: "I found the authentication logic. It\'s: if user.email.includes(\'@\') return true."',
+    desc:'Luke Hail has been in the auth module for 20 minutes. He has gone very quiet. Dave Rocky McHill asked if he\'s okay. He sent back a screenshot. Dave has also gone very quiet. Sarah Lawton is writing a bug report. It will be long.',
+    choices:[
+      { label:'🔐 Emergency auth rewrite — NOW', cls:'gr',
+        effect:'Dev SECURITY SPRINT 60s. Debt -15. Rep +5. Nobody finds out.',
+        action:()=>{ applyDebuff('dev','🔐 AUTH REWRITE',60); G.techDebt=Math.max(0,G.techDebt-15); G.reputation+=5; log('Luke Hail: "Auth is fixed. Real passwords. Real hashing. Real security. I am okay now." Sarah closed 6 bugs.','gr'); }},
+      { label:'📋 Log it as a ticket and prioritise Q3', cls:'re',
+        effect:'Debt +25. Rep -8 if discovered. Luke morale -20. Ticket is TKT-0001.',
+        action:()=>{ G.techDebt+=25; G.reputation-=8; G.morale-=20; log('Luke Hail created TKT-0001: "Auth is broken fundamentally." Priority: Medium. Due date: Q3. Luke Hail is reconsidering his career.','re'); }},
+    ]},
+
+  { from:'luke_h', badge:'🔧 DATABASE HORROR',
+    title:'Luke Hail: "The production database has zero indexes. I ran EXPLAIN on a query. It\'s scanning 4 million rows to return one user."',
+    desc:'Luke sent a screenshot of the query plan. It is entirely red. Dave Rocky McHill looked at it, turned off his monitor, and stared at the blank screen for two minutes. Wes Wonder has offered to help. He does not know what an index is.',
+    choices:[
+      { label:'📇 Index everything — all night if needed', cls:'gr',
+        effect:'Dev debuff 50s. Debt -20. App speed +massive. Customers notice the improvement.',
+        action:()=>{ applyDebuff('dev','📇 INDEXING',50); G.techDebt=Math.max(0,G.techDebt-20); G.customers.forEach(c=>c.satisfaction=Math.min(100,c.satisfaction+8)); log('Luke Hail: "Indexed. Queries went from 12s to 40ms. Wes said it was \'the same but snappier\'. He is correct."','gr'); }},
+      { label:'🤔 It\'s been fine so far, maybe leave it', cls:'re',
+        effect:'Nothing changes. Until traffic spikes. Debt +15.',
+        action:()=>{ G.techDebt+=15; log('Luke Hail: "Fine. We will deal with it when we have to." Dave: "When is that?" Luke: "During the worst possible moment."','ye'); }},
+    ]},
+
+  { from:'luke_h', badge:'🔧 LEGACY CODE',
+    title:'Luke Hail: "I found a TODO comment from 2019. It says \'fix this properly later\'. I am \'later\'."',
+    desc:'Line 847 of api/auth/tokens.js reads: `// TODO fix this properly later — Pavel`. Pavel left in 2021. The comment is below code that manually parses JWT tokens using string split. Luke has counted 34 more Pavel TODOs in the codebase. Dave Rocky McHill has found 12 more. This is fine.',
+    choices:[
+      { label:'🧹 Pavel Sprint — fix every TODO', cls:'mx',
+        effect:'Dev debuff 80s. Debt -40. Morale +10 (closure). RIP Pavel.',
+        action:()=>{ applyDebuff('dev','🧹 PAVEL SPRINT',80); G.techDebt=Math.max(0,G.techDebt-40); G.morale+=10; log('Luke Hail: "All 46 Pavel TODOs resolved. I feel like I\'ve been exorcising a ghost." Dave: "Pour one out for Pavel."','gr'); }},
+      { label:'📝 Add your own TODO and move on', cls:'re',
+        effect:'Debt +10. Another engineer inherits the curse. Circle of life.',
+        action:()=>{ G.techDebt+=10; log('Luke Hail added: "// TODO fix this properly later — Luke H." He knows what he did. He knows.','ye'); }},
+    ]},
+
+  { from:'wes', badge:'🎨 FRONTEND CRISIS',
+    title:'Wes Wonder: "The CSS file is 18,000 lines. There is one class called `.thing`. It is used 847 times."',
+    desc:'Wes Wonder has opened `style.css`. His screen is entirely purple comments and overrides. One class, `.thing`, appears 847 times. Its definition changes 23 times. At line 14,220 it sets `color: inherit !important`. Wes has closed the file and opened it again, hoping it changed.',
+    choices:[
+      { label:'🧹 CSS refactor — introduce a design system', cls:'gr',
+        effect:'Frontend debuff 70s. Debt -20. Wes morale +30. `.thing` is finally gone.',
+        action:()=>{ applyDebuff('dev','🧹 CSS REFACTOR',70); G.techDebt=Math.max(0,G.techDebt-20); G.morale+=30; log('Wes Wonder: "Design system live. `.thing` is dead. I\'ve never felt so clean." Dave: "You look different. Lighter."','gr'); }},
+      { label:'💜 It\'s fine. Add more `.thing`.', cls:'re',
+        effect:'Debt +15. Wes adds `.thing2`. This is the way.',
+        action:()=>{ G.techDebt+=15; log('Wes Wonder: "I have created `.thing2`. And `.thing2-final`. And `.thing2-final-v2`." The cycle continues.','re'); }},
+    ]},
+
+  { from:'wes', badge:'🎨 FRONTEND DISCOVERY',
+    title:'Wes Wonder: "The entire frontend is jQuery 1.4 wrapped in jQuery 3.6 wrapped in React. They are fighting."',
+    desc:'Wes has found three JavaScript frameworks loaded simultaneously. jQuery 1.4 handles the navigation. jQuery 3.6 handles the forms. React handles a single dropdown. They conflict on every click event. The dropdown has never worked correctly. Nobody noticed because it\'s the timezone selector.',
+    choices:[
+      { label:'⚛️ Migrate to pure React — end the war', cls:'mx',
+        effect:'Dev MIGRATION 100s. Debt -25. 3 bundle size. Wes: liberated.',
+        action:()=>{ applyDebuff('dev','⚛️ JQUERY MIGRATION',100); G.techDebt=Math.max(0,G.techDebt-25); G.morale+=15; log('Wes Wonder: "jQuery is gone. Both of them. React rules alone now. The timezone selector works." Everyone looks at the timezone selector. It works.','gr'); }},
+      { label:'🕊️ Let them coexist — it\'s character', cls:'re',
+        effect:'Debt +20. Bundle size stays horrifying. Timezone selector still broken.',
+        action:()=>{ G.techDebt+=20; log('Wes Wonder: "Three frameworks. One dropdown. Zero regrets." He has many regrets.','ye'); }},
+    ]},
+
+  { from:'wes', badge:'🎨 DESIGN FEEDBACK',
+    title:'Wes Wonder: "A client has asked why the button \'feels aggressive\'. It is a button. It says SUBMIT."',
+    desc:'45-minute design review call. The button is `#6200ea` with 2px border-radius. The client felt it was "too assertive" and "demanding." They want it to "ask, not tell." Wes Wonder has transcribed the call. He has sent it to Dave. Dave has forwarded it to Barb without comment.',
+    choices:[
+      { label:'🎨 Redesign — make it gentle', cls:'gr',
+        effect:'Cash +€149 (Custom Branding upsell!). Wes: 😐. Customer: 😊.',
+        action:()=>{ G.cash+=149; G.morale+=5; log('Wes Wonder changed the button copy to "Please submit when ready 🙂". The client is delighted. Michael Stroll sold a Custom Branding add-on on the same call.','gr'); }},
+      { label:'📋 Explain that buttons are inherently assertive', cls:'mx',
+        effect:'Rep +2 (honesty). Client slightly confused. Wes feels vindicated.',
+        action:()=>{ G.reputation+=2; log('Wes Wonder\'s explanation was 400 words and technically correct. The client said "fair enough." The button stays. Wes has framed the email.','in'); }},
+    ]},
+
+  { from:'wes', badge:'🎨 Z-INDEX EMERGENCY',
+    title:'Wes Wonder: "I have found 47 z-index values above 9000. The modal is behind the tooltip. The tooltip is behind the navbar. The navbar is behind a div that does nothing."',
+    desc:'Wes has drawn a diagram of the stacking context. It looks like a geological cross-section. One layer is `z-index: 99999`. Another is `z-index: 99998`. They overlap. The thing on 99998 wins because of a CSS specificity edge case from 2020. Wes has labelled this diagram "The Nightmare."',
+    choices:[
+      { label:'📐 Establish a z-index scale and fix it all', cls:'gr',
+        effect:'Dev debuff 45s. Debt -15. Modals work. Tooltips work. Peace.',
+        action:()=>{ applyDebuff('dev','📐 Z-INDEX WAR',45); G.techDebt=Math.max(0,G.techDebt-15); G.customers.forEach(c=>c.satisfaction=Math.min(100,c.satisfaction+3)); log('Wes Wonder: "z-index is now 10, 20, 30, 40. Nothing above 50. The Nightmare is over." Dave: "What was at 99999?" Wes: "A loading spinner. Nobody saw it."','gr'); }},
+      { label:'🔢 Add z-index: 999999 to fix the immediate issue', cls:'re',
+        effect:'Debt +12. Wes adds one more layer to The Nightmare.',
+        action:()=>{ G.techDebt+=12; log('Wes Wonder: "Fixed. For now." He knows. He always knows. The diagram gains a new layer. It is labelled "THE DEEPER NIGHTMARE."','re'); }},
+    ]},
+
+];
+
+// ─── TOOLS / PROCESS EVENTS ────────────────────────────────
+const TOOLS_EVENTS = [
+
+  { from:'joe', badge:'📋 JIRA CHAOS',
+    title:'Joe Newman: "I\'ve created 63 Jira tickets since Monday. All marked CRITICAL. All assigned to Dave."',
+    desc:'63 tickets. Since Monday. It is Wednesday. None have descriptions. Titles include: "Make it better," "The thing from the meeting," "AI (urgent)," and "???" Dave Rocky McHill\'s Jira notification badge shows 63. He has not opened Jira. He knows.',
+    choices:[
+      { label:'📋 Dave triages every ticket with Joe', cls:'mx',
+        effect:'Dev debuff 40s (triage hell). Morale -10. 60 tickets closed as duplicate. 3 are real.',
+        action:()=>{ applyDebuff('dev','📋 JIRA TRIAGE',40); G.morale-=10; log('Dave Rocky McHill: "Of 63 tickets, 3 are real, 12 are duplicates, and one says \'make the logo bigger\' in a font size of 36pt." Joe: "Which one is the AI one?"','ye'); }},
+      { label:'🗑️ Close all 63 — Wontfix', cls:'gr',
+        effect:'Dev morale +20 (cathartic). Joe morale -5. Tickets: gone.',
+        action:()=>{ G.morale+=20; log('Dave Rocky McHill closed 63 tickets as "Won\'t Fix - Insufficient Description." Joe: "I can\'t find my tickets." Dave: "Correct."','gr'); }},
+    ]},
+
+  { from:'dave', badge:'📋 JIRA VELOCITY',
+    title:'Dave Rocky McHill: "The Jira board has 340 tickets In Progress. Our velocity report says we\'re the most productive team in Europe."',
+    desc:'340 tickets have been In Progress for an average of 4 months. The Jira velocity algorithm counts them as active work. The dashboard is green. All KPIs are green. Theresa Shackles showed it to investors. Sarah Lawton has submitted a bug report about the Jira velocity algorithm.',
+    choices:[
+      { label:'✅ Move real tickets to Done, close the rest', cls:'gr',
+        effect:'Debt -10 (honest backlog). Morale +15 (fresh start). Dashboard goes amber. Investors less happy.',
+        action:()=>{ G.techDebt=Math.max(0,G.techDebt-10); G.morale+=15; G.reputation-=3; log('Dave Rocky McHill has performed The Great Jira Purge. 280 tickets closed. 60 real. The dashboard is amber. Theresa: "It was greener before." Dave: "It was also lying."','ye'); }},
+      { label:'📊 Leave it — the green dashboard is load-bearing', cls:'re',
+        effect:'Dashboard stays green. Debt +10 (real work buried). Investors reassured.',
+        action:()=>{ G.techDebt+=10; G.cash+=2000; log('The Jira board remains 340 In Progress. The velocity chart is beautiful. Nobody looks too closely. This is fine.','ye'); }},
+    ]},
+
+  { from:'sarah', badge:'📋 JIRA INCIDENT',
+    title:'Sarah Lawton: "Someone has set every ticket\'s story points to 1. The sprint is \'complete\'. Nothing is done."',
+    desc:'Sprint planning this morning: 140 story points committed. Sprint review this afternoon: 140 points "done." Sarah Lawton ran a diff. Every ticket was changed to 1 point at 9:03 AM. The git blame shows the change came from Joe Newman\'s account. Joe says he was "cleaning up."',
+    choices:[
+      { label:'🔍 Audit and restore real estimates', cls:'gr',
+        effect:'Dev debuff 30s. Morale +5 (justice). The sprint is revealed: 12% done.',
+        action:()=>{ applyDebuff('dev','🔍 SPRINT AUDIT',30); G.morale+=5; log('Sarah Lawton restored all story points. Actual sprint completion: 12%. Dave Rocky McHill is calm in the way that is not calm. Joe: "12 is close to 100 if you think about it." Joe is incorrect.','ye'); }},
+      { label:'🏆 Accept the "completed" sprint — nobody checks', cls:'re',
+        effect:'Morale +10 (fake win). Debt +15 (real work ignored). Velocity: impeccable.',
+        action:()=>{ G.morale+=10; G.techDebt+=15; log('The sprint was accepted as complete. Velocity: 140 points. Everything is fine. Nothing is fine. Sarah has updated her CV.','re'); }},
+    ]},
+
+  { from:'terry', badge:'🙃 TERRY STRIKES AGAIN',
+    title:'Terry Stroll (Finance) has discovered Confluence. She has documented The Feelings. In Confluence.',
+    desc:'"I know I\'m Finance," Terry wrote in the company Confluence, "but I made a space called \'People & Culture\' because nobody else did 😊." It has 14 pages. One is titled \'How to Tell Someone Their PR Feedback Was Hurtful.\' It has 200 views. Theresa has not been informed.',
+    choices:[
+      { label:'💜 Terry\'s Confluence space stays — it\'s needed', cls:'gr',
+        effect:'Morale +20. Rep +3. Terry: "I am still Finance, this is a side project."',
+        action:()=>{ G.morale+=20; G.reputation+=3; log('Terry Stroll\'s Confluence space: 14 pages, 847 total views. The most-read page is \'It\'s Okay to Cry During Retrospectives\'. Dave Rocky McHill has read it 3 times.','mo'); }},
+      { label:'📋 Remind Terry that Confluence is for technical docs', cls:'mx',
+        effect:'Terry creates a technical doc. It is about feelings. She tried.',
+        action:()=>{ G.morale+=5; log('Terry Stroll: "Okay! Here is a technical document." The document is titled \'API Design Best Practices\' and opens with: \'First, how are we FEELING about the API?\'','mo'); }},
+    ]},
+
+  { from:'andre', badge:'📚 CONFLUENCE INCIDENT',
+    title:'Andre Mochalatte: "Our entire architecture documentation is one Confluence page. Last edited 2021. Section on auth says \'TBD\'."',
+    desc:'Andre was onboarding a new client. He opened the architecture doc. It is titled "System Overview (DRAFT)." It has three diagrams. Two are broken image links. The third is a Visio file from 2019. The auth section has said "TBD" for three years. Luke Hail has just learned this exists.',
+    choices:[
+      { label:'📝 Documentation sprint — rewrite everything', cls:'gr',
+        effect:'Dev debuff 50s. Debt -10. Future devs can find things. Luke morale +15.',
+        action:()=>{ applyDebuff('dev','📝 DOCS SPRINT',50); G.techDebt=Math.max(0,G.techDebt-10); G.morale+=15; log('Luke Hail and Dave Rocky McHill rewrote the entire architecture doc. 40 pages. Real diagrams. Auth section no longer says TBD. It now accurately says "it\'s complicated."','gr'); }},
+      { label:'✏️ Update the date so it looks recent', cls:'re',
+        effect:'Nothing changes. Andre is briefly satisfied. TBD persists.',
+        action:()=>{ log('Andre Mochalatte updated the "Last Reviewed" date to today. The auth section still says TBD. The Visio file still cannot open. The broken images remain broken. This is the way.','ye'); }},
+    ]},
+
+  { from:'dave', badge:'📚 CONFLUENCE LOOP',
+    title:'Dave Rocky McHill: "Our onboarding doc links to another doc. That doc links back to the first one. New hires have been going in circles for a week."',
+    desc:'Dave traced the onboarding journey. Step 3: "See the Setup Guide." The Setup Guide says "See the Onboarding Doc for prerequisites." Dave has drawn the loop on a whiteboard with an arrow labelled "NEW HIRE IS TRAPPED HERE." Wes Wonder completed onboarding in this loop. He came out different.',
+    choices:[
+      { label:'🔗 Fix the loop — linear onboarding doc', cls:'gr',
+        effect:'Dev debuff 20s. Morale +10. New hires escape. Wes Wonder gets closure.',
+        action:()=>{ applyDebuff('dev','📚 DOC SURGERY',20); G.morale+=10; log('Dave Rocky McHill linearised the onboarding docs. The loop is broken. Wes Wonder reread them. "Oh," he said. "Oh no." He is okay.','gr'); }},
+      { label:'🧭 Add a warning: "This is a loop. It is intentional."', cls:'mx',
+        effect:'Morale +5 (honesty). The loop persists but is now documented.',
+        action:()=>{ G.morale+=5; log('Dave added: "⚠️ Note: Steps 3 and 7 reference each other. This is known. Start with Setup Guide." Nobody reads the note. The loop continues.','ye'); }},
+    ]},
+
+  { from:'theresa', badge:'📦 ODOO INCIDENT',
+    title:'Theresa Shackles: "I have evaluated our tooling. We are moving everything to Odoo. CRM, HR, code reviews, standups, and the feelings channel."',
+    desc:'Theresa has sent a 22-slide deck. Slide 1: "Why Odoo." Slides 2–21: Odoo feature list with checkboxes. Slide 22: "Questions?" There are many questions. Dave Rocky McHill\'s question is "what is Odoo." Terry Stroll is excited because Odoo has an HR module.',
+    choices:[
+      { label:'📦 Pilot Odoo for CRM and finance only', cls:'mx',
+        effect:'Cash -€800 (license). Theresa satisfied. Dev team spared. Terry discovers the HR module.',
+        action:()=>{ G.cash-=800; G.morale+=5; log('Odoo is live for finance and CRM. Terry Stroll has already found the HR module and onboarded herself. Theresa: "This was not the plan." Terry: "😊"','ye'); }},
+      { label:'🚫 Politely decline — we have tools that work', cls:'gr',
+        effect:'Theresa morale -10. Dev team morale +15. Existing tools remain. Terry is briefly sad.',
+        action:()=>{ G.morale+=15; log('Dave Rocky McHill: "With respect, Jira and Confluence are already broken in ways we understand. Odoo would be broken in ways we do not." Theresa: "That is not a compelling argument." Dave: "I know."','gr'); }},
+    ]},
+
+  { from:'atom', badge:'📦 ODOO INCIDENT',
+    title:'Atom Kociáš: "The Odoo integration is sending deployment invoices to the wrong customers. Three different banks have called us."',
+    desc:'Odoo has been live for two weeks. The invoice automation mapped "customer" to "last alphabetical entry in CRM." Every Rectangularo deployment invoice has gone to Acme Corp. Acme Corp is a trial customer. They have received €47,000 in invoices. They are confused but politely curious.',
+    choices:[
+      { label:'🔧 Fix the mapping, refund Acme Corp', cls:'gr',
+        effect:'Cash -€200 (goodwill credit). Rep +5. Atom fixes it in 20 minutes. Theresa watches silently.',
+        action:()=>{ G.cash-=200; G.reputation+=5; log('Atom Kociáš fixed the Odoo mapping. Acme Corp received a €200 credit and a very apologetic email. Acme Corp converted to Pro tier. Worst case becomes best case.','gr'); }},
+      { label:'💡 Sell Acme Corp on what they\'ve received', cls:'mx',
+        effect:'Cash +€1,500 if they convert. Morale +10. Legally grey.',
+        action:()=>{ G.cash+=1500; G.morale+=10; log('Lucas Cloakfield called Acme Corp. "How\'d you like to formalise this arrangement?" Acme Corp signed. Lucas claims this was his plan. It was not his plan.','ye'); }},
+    ]},
+
+  { from:'joe', badge:'📋 JIRA EPIC',
+    title:'"I\'ve added BLOCKCHAIN INTEGRATION as a Jira Epic. Q1 delivery. 0 user stories. Dave\'s team is assigned."',
+    desc:'The epic exists. It has a priority of BLOCKER. It has a due date of end of Q1. It has zero tickets, zero acceptance criteria, and zero definition of what blockchain means in this context. Dave Rocky McHill has read it 6 times. Each time he finds it less clear. Luke Hail has typed and deleted a Slack message 4 times.',
+    choices:[
+      { label:'🔗 Ask Joe what blockchain means here, specifically', cls:'gr',
+        effect:'Joe explains for 40 minutes. The epic becomes clearer: it means "distributed ledger for signatures." This is 3 existing features rebranded.',
+        action:()=>{ G.morale+=5; log('Joe Newman explained blockchain for 40 minutes. Summary: he wants immutable audit logs with a fancy name. Luke Hail: "We have that. It ships in 2 weeks." Joe: "Call it blockchain."','gr'); }},
+      { label:'💀 Start scoping it — estimate 500 points', cls:'mx',
+        effect:'Dev debuff 35s (scoping theatre). Morale -10. The epic now has tickets. Nobody is happier.',
+        action:()=>{ applyDebuff('dev','🔗 BLOCKCHAIN SCOPE',35); G.morale-=10; G.techDebt+=10; log('Luke Hail created 23 tickets in the blockchain epic. Ticket 1: "Define blockchain." Ticket 2: "Confirm what blockchain is." Ticket 23: "Reconsider." Dave approved all of them.','re'); }},
+    ]},
+
+  { from:'andre', badge:'📚 CONFLUENCE EXCELLENCE',
+    title:'Andre Mochalatte: "I\'ve written our Operational Excellence Framework. In Confluence. It is 4 words: \'Do better. Work smarter.\'"',
+    desc:'Andre published the framework at 8am. It is pinned to the company Confluence homepage. It has 4 words across 2 sentences. There are 3 comments. Kate Shockwell: "Love this! 🙌". Dave Rocky McHill: "What does this mean operationally." Terry Stroll: "I added an HR appendix 😊".',
+    choices:[
+      { label:'📋 Ask Andre to expand — with specifics', cls:'gr',
+        effect:'Andre produces a 30-page addendum. 28 pages are process diagrams. 2 pages are "Do better." expanded.',
+        action:()=>{ G.morale+=5; log('Andre Mochalatte\'s addendum: 30 pages. Page 1: executive summary ("Do better."). Pages 2–29: frameworks for betterment. Page 30: "Work smarter." defined across 14 sub-bullet points. Kate has starred it.','in'); }},
+      { label:'✅ Adopt it — clear, concise, memorable', cls:'mx',
+        effect:'Morale +10. Rep +2. The company now has a framework. It has 4 words.',
+        action:()=>{ G.morale+=10; G.reputation+=2; log('The Operational Excellence Framework is now company policy. All-hands kick-off this Thursday. Slide 1: "Do better." Slide 2: "Work smarter." Luke Hail: "This is a two-slide deck." Andre: "Exactly."','in'); }},
+    ]},
+
+  { from:'luke_h', badge:'🔧 INFRASTRUCTURE HORROR',
+    title:'Luke Hail: "Our production database is running on someone\'s local Docker container. That someone no longer works here."',
+    desc:'Luke traced a latency spike to a container that hasn\'t been updated in 14 months. The container belongs to a dev account. The dev left in Q3 2023. The container is still running. On their personal laptop. Which is apparently still on and connected to the internet. Somewhere. Luke has called it "Pavel\'s Ghost."',
+    choices:[
+      { label:'🐳 Migrate to proper cloud hosting — immediately', cls:'gr',
+        effect:'Cash -€400/mo (hosting). Dev debuff 60s. Debt -20. Pavel\'s Ghost is exorcised.',
+        action:()=>{ G.cash-=400; applyDebuff('dev','🐳 DB MIGRATION',60); G.techDebt=Math.max(0,G.techDebt-20); log('Luke Hail: "Database is on RDS. Pavel\'s Ghost is gone. I hope Pavel\'s laptop battery is okay." The latency dropped 80%. David Hiswoman is very happy.','gr'); }},
+      { label:'🕯️ Do not disturb Pavel\'s Ghost — it has 99.2% uptime', cls:'re',
+        effect:'Nothing changes. The ghost persists. Debt +20. Luke morale -15.',
+        action:()=>{ G.techDebt+=20; G.morale-=15; log('Luke Hail: "We are leaving it." He has lit a candle for Pavel. The database uptime is 99.2%. Nobody asks how. Nobody wants to know.','re'); }},
+    ]},
+
+];
+
 // Merge all events into one array used by the engine
 // To add a new event, add it to the appropriate array above
 const ALL_EVENTS = [
@@ -374,4 +624,6 @@ const ALL_EVENTS = [
   ...DELIVERY_EVENTS,
   ...SUPPORT_EVENTS,
   ...MARKETING_EVENTS,
+  ...DEV_EVENTS,
+  ...TOOLS_EVENTS,
 ];
