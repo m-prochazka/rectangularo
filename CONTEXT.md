@@ -1,6 +1,6 @@
 # RECTANGULARO — Project Context
 > Drop this file in your project root and paste it to any Claude instance to resume with zero re-explaining.
-> Last updated: v3.6 — February 2026
+> Last updated: v3.7 — February 2026
 
 ---
 
@@ -46,12 +46,12 @@ rectangularo/
 ### Resources (shown in topbar)
 | Resource | Description |
 |----------|-------------|
-| **Cash** | Main currency. Starts €5,000. Goes negative = danger. |
+| **Cash** | Main currency. Starts €12,000. Goes negative = danger. |
 | **MRR** | Monthly Recurring Revenue from paying customers × region multiplier |
-| **BURN/mo** | Monthly costs: salaries (€200/headcount) + infra (€700) + regional infra (€300/active non-EU region) + €20/customer |
-| **Reputation** | 0–100. Affects tier of incoming customers. Rises with good events, falls with bad ones. |
-| **Morale** | 0–100. Multiplies all team efficiency. Falls from crunch debuffs, rises from good events/upgrades. |
-| **Tech Debt** | Grows passively (+0.8 + monthCount×0.05 every 25 ticks, capped at 3.0). Slows dev. Testing + DevOps reduce it. |
+| **BURN/mo** | Monthly costs: salaries (€450/headcount) + base infra (€2,000) + regional server (€3,000/active non-EU region) + €70/customer |
+| **Reputation** | 0–100. Affects tier of incoming customers. Passive decay -1/350t. Ticket backlog (>15) and severe tech debt (>80) accelerate decay. |
+| **Morale** | 0–100. Multiplies all team efficiency. Heals +1/200t (cap 80). Drains passively from tech debt >60 and open ticket backlog >10. |
+| **Tech Debt** | Grows passively (+2.0 + monthCount×0.08 every 25 ticks, capped at 5.0). Slows dev. Testing + DevOps reduce it (nerfed — debt wins without investment). |
 
 ### Monthly P&L
 - Every 600 game ticks = 1 in-game month
@@ -140,26 +140,26 @@ Custom Domain unlocks via ISO 27001 upgrade (not a dev feature).
 ### Company Upgrades (12)
 | Upgrade | Cost | Effect |
 |---------|------|--------|
-| CRM System | €800 | Sales level+1, buff |
-| Knowledge Base | €600 | Support buff |
-| CI/CD Pipeline | €1,500 | Dev + DevOps buffs |
-| SLA Agreements | €700 | Rep +10 |
-| Observability Stack | €1,200 | Debt -20, DevOps buff |
-| HR & People Ops | €1,800 | Morale +15 (Terry relieved) |
-| ISO 27001 Cert | €4,000 | Rep +20, unlocks Custom Domain addon |
-| Internal AI Tools | €2,500 | All teams get AI buff (+10% eff), Morale +8 |
-| Remote-First Policy | €500 | Morale +20 |
-| Hackathon | €1,200 | Skip 2 dev features instantly |
-| Channel Partner Program | €3,000 | Sales buff (PARTNERS) |
-| EU Data Residency | €5,000 | Rep +15 |
+| CRM System | €3,200 | Sales level+1, buff |
+| Knowledge Base | €2,500 | Support buff |
+| CI/CD Pipeline | €6,000 | Dev + DevOps buffs |
+| SLA Agreements | €2,800 | Rep +10 |
+| Observability Stack | €5,000 | Debt -20, DevOps buff |
+| HR & People Ops | €7,000 | Morale +15 (Terry relieved) |
+| ISO 27001 Cert | €16,000 | Rep +20, unlocks Custom Domain addon |
+| Internal AI Tools | €10,000 | All teams get AI buff (+10% eff), Morale +8 |
+| Remote-First Policy | €2,000 | Morale +20 |
+| Hackathon | €5,000 | Skip 2 dev features instantly |
+| Channel Partner Program | €12,000 | Sales buff (PARTNERS) |
+| EU Data Residency | €20,000 | Rep +15 |
 
 ### Production Regions
-| Region | Cost | MRR Bonus | Compliance |
-|--------|------|-----------|------------|
-| 🇪🇺 Europe | FREE (home) | ×1.00 (base) | GDPR, eIDAS, ISO 27001 |
-| 🇦🇪 UAE/Dubai | €8,000 | +25% to total mult | UAE Pass, TDRA |
-| 🇸🇦 Saudi Arabia | €10,000 | +20% to total mult | NAFATH, NCA |
-| 🇺🇸 USA | €12,000 | +30% to total mult | ESIGN Act, SOC 2 |
+| Region | Deploy Cost | Ongoing Cost | MRR Bonus | Compliance |
+|--------|-------------|--------------|-----------|------------|
+| 🇪🇺 Europe | FREE (home) | €0/mo | ×1.00 (base) | GDPR, eIDAS, ISO 27001 |
+| 🇦🇪 UAE/Dubai | €25,000 | €3,000/mo | +25% to total mult | UAE Pass, TDRA |
+| 🇸🇦 Saudi Arabia | €40,000 | €3,000/mo | +20% to total mult | NAFATH, NCA |
+| 🇺🇸 USA | €60,000 | €3,000/mo | +30% to total mult | ESIGN Act, SOC 2 |
 
 MRR = base revenue × sum of all active region mrrMults. All-regions-active → ×1.75 total.
 David Hiswoman's DevOps team deploys regions. Progress bar shown during deployment (rate: `headcount × level × eff × 0.3`/tick).
@@ -173,11 +173,11 @@ David Hiswoman's DevOps team deploys regions. Progress bar shown during deployme
 
 ### Marketing Campaigns
 Luke Oktoberfest + Sharky Simpson run campaigns with a shared cooldown:
-- LinkedIn Thought Leadership (€300, 2 leads, 120s cooldown)
-- Product Hunt Launch (€500, 4 leads, 200s)
-- Industry Conference Booth (€1,200, 6 leads, 300s)
-- Cold Email Sequence (€200, 3 leads, 100s)
-- Webinar: eSign in 2025 (€400, 4 leads, 150s)
+- LinkedIn Thought Leadership (€1,200, 2 leads, 120s cooldown)
+- Product Hunt Launch (€2,000, 4 leads, 200s)
+- Industry Conference Booth (€5,000, 6 leads, 300s)
+- Cold Email Sequence (€800, 3 leads, 100s)
+- Webinar: eSign in 2025 (€1,500, 4 leads, 150s)
 
 Passive lead gen: Marketing level × 5% chance per 200 ticks.
 
@@ -339,11 +339,13 @@ Threshold events have a 3,000–5,000 tick cooldown before re-triggering.
 - [ ] Terry Stroll events could trigger more frequently (they're beloved)
 - [ ] Addon sell rate could scale with sales team level (currently flat 40% per cycle)
 - [x] Win screen appears multiple times after "Continue to grow" — fixed v3.5: `G.won` flag prevents re-triggering once win condition is met
-- [x] MRR too high vs burn — fixed v3.5: base infra €500→€700, +€20/customer scaling infra added to burn
+- [x] MRR too high vs burn — fixed v3.5/v3.7: full economy rebalance in v3.7 (see changelog)
 - [x] Tickets clear too fast with many support staff — fixed v3.5: support multiplier 0.9→0.55
-- [x] Morale/tech debt/reputation too easy to maintain — fixed v3.5: tech debt passive +0.8/25t (was +0.5), testing reduction 0.9→0.5, devops reduction 0.8→0.4, morale auto-heal every 80t cap 80 (was 60t cap 85), satisfaction debt penalty 0.03→0.05/tick
+- [x] Morale/tech debt/reputation too easy to maintain — fixed v3.5/v3.7: deeper rebalance in v3.7 (passive drains, slower heal, nerfed team reduction)
 - [x] Feature requests recycling after analysis — fixed v3.5: `G.usedRequests[]` permanently tracks analyzed names; once seen, a request never regenerates
-- [ ] Event's are clearly good - bad and the bad choice doesn't give enough + so there's no need to pick it (game is very easy)
+- [x] Event's are clearly good/bad with no push to pick bad — fixed v3.7: all `cls:'re'` choices now have real short-term temptation (cash, rep, morale upside) with deferred consequences
+- [x] Feature requests not generating — fixed v3.7: `pend` → `pending` typo in `featureReqLoop()` was silently crashing the function every call
+- [x] Game doesn't pause during events — fixed v3.7: game auto-pauses on event show, restores prior pause state on choice
 
 ---
 
@@ -462,6 +464,17 @@ Planned features and improvements. Implement these in future sessions.
 ---
 
 ## Changelog
+
+### v3.7 — February 2026
+- **Event rebalancing — red choices**: All `cls:'re'` choices now have genuine short-term appeal. Pattern: immediate cash/rep/morale upside NOW, deferred consequences. Key changes: Let Joe add sprint tickets (+€10K cash, +5 rep), Honor ERP promise (+€180K deal), Enforce 5-day office (+12 rep instead of +3), Buy Confluence/Jira (+5 rep), Commit to AI pivot (+€30K investor + 15 rep upfront), Fill 6 roles (+20 morale +8 rep), Escalate to HR (+€900 unclaimed budget), Ignore tech debt crisis (+€10K), Motivational meeting (+€3K saved), Joe's conference (+€60K from 3 Fortune 500s). Dev/tools red choices get small cash amounts for saved costs.
+- **Region costs drastically increased**: UAE €8K→**€25K** (deploy) + €3K/mo ongoing; KSA €10K→**€40K** + €3K/mo; USA €12K→**€60K** + €3K/mo. Total to unlock all: €125K deploy + €9K/mo ongoing. Regions are now major strategic commitments.
+- **Economy rebalance — recurring costs**: Starting cash €5K→**€12K**. Salaries €200→**€450**/headcount. Base infra €700→**€2,000**. Customer infra €20→**€70**/customer. Regional servers €300→**€3,000**/region/mo. Starting burn (12 staff, EU, 0 customers): ~€7,400/mo.
+- **Economy rebalance — one-time costs**: All upgrades ~4×. CRM €800→€3,200; KB €600→€2,500; CI/CD €1.5K→€6K; SLA €700→€2,800; Observability €1.2K→€5K; HR €1.8K→€7K; ISO 27001 €4K→€16K; AI Tools €2.5K→€10K; Remote-First €500→€2K; Hackathon €1.2K→€5K; Partners €3K→€12K; EU Data €5K→€20K. Marketing campaigns ~4×: Cold Email €200→€800, LinkedIn €300→€1,200, Webinar €400→€1,500, Product Hunt €500→€2K, Conference €1.2K→€5K. Hire cost base €200→€500 (same 1.5× exponential). Level-up base €500→€800.
+- **Tech debt deeper rebalance**: Passive growth 0.8+month×0.05 → **2.0+month×0.08** (cap 5.0). Testing reduction ×0.5→**×0.2**. DevOps reduction ×0.4→**×0.15**. Finance reduction ×0.3→**×0.1**. Debt now wins at low team investment; only actively leveled teams can fight it.
+- **Morale passive drain added**: Heal rate 80t→**200t**. Tech debt >60 drains -1 morale every 150t. Open tickets >10 drains -1 morale every 120t.
+- **Reputation passive decay added**: -1 rep every 350t (floors at 30). Open tickets >15: -1 rep every 180t. Tech debt >80: -1 rep every 250t. Reputation now requires active management.
+- **Bug fix — feature requests**: `pend` undefined variable in `featureReqLoop()` → `pending`. Was silently throwing a ReferenceError every call, completely preventing new feature requests from generating.
+- **Event auto-pause**: Game pauses automatically when an event modal appears (`G.paused=true`). Choosing an option restores prior pause state via closure (`wasAlreadyPaused`). Manual pause before event is respected.
 
 ### v3.6 — February 2026
 - **Scaling customer cap**: `maxCustomers()` function replaces hardcoded 60. Cap: EU only=60, +UAE=100, +KSA=150, +USA=200. Displayed as `count / cap` in customers view. Rewards unlocking regions beyond MRR gains.
