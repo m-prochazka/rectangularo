@@ -15,7 +15,8 @@ const G = {
   cash: 5000, morale: 100, reputation: 50, techDebt: 0,
   monthTick: 0, monthCount: 0, monthlyBurn: 0,
   docsProcessed: 0, featuresShipped: 0, deployments: 0, ticketsResolved: 0, addonsSold: 0,
-  customers: [], tickets: [], featureRequests: [],
+  customers: [], tickets: [], featureRequests: [], usedRequests: [],
+  won: false,
   activeEvent: null, lastEventTick: 0, lastCrisisTick: {},
   currentView: 'home', notifCount: 0, rpTab: 'tix',
   devProgress: 0, mktCooldown: 0,
@@ -107,8 +108,9 @@ function calcMRR() {
 function calcBurn() {
   let b = 0;
   Object.values(G.teams).forEach(t => { b += t.headcount * 200; });
-  b += 500; // base infra
+  b += 700; // base infra
   b += Object.values(G.regions).filter(r=>r.active&&r.id!=='eu').length * 300;
+  b += G.customers.length * 20; // scaling infra — more customers = more servers
   return b;
 }
 
@@ -359,7 +361,7 @@ function salesLoop() {
 function supportLoop() {
   const t=G.teams.support;
   const open=G.tickets.filter(x=>!x.resolved); if(!open.length) return;
-  t.progress += t.headcount*t.level*teamEff('support')*.9;
+  t.progress += t.headcount*t.level*teamEff('support')*.55;
   if (t.progress>=100) {
     t.progress=0; resolveTicket(open[Math.floor(Math.random()*open.length)].id);
     t.xp+=8; if(t.xp>=t.xpMax){t.xp=0;t.xpMax=Math.floor(t.xpMax*1.6);t.level++;log(`Support Lv.${t.level}!`,'gr');}
@@ -378,12 +380,12 @@ function devLoop() {
 }
 function testingLoop() {
   const t=G.teams.testing;
-  if (G.tick%15===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('testing')*.9);
+  if (G.tick%15===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('testing')*.5);
   t.xp+=.25; if(t.xp>=t.xpMax){t.xp=0;t.xpMax=Math.floor(t.xpMax*1.6);t.level++;log(`Testing Lv.${t.level}!`,'gr');}
 }
 function devopsLoop() {
   const t=G.teams.devops;
-  if (G.tick%20===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('devops')*.8);
+  if (G.tick%20===0) G.techDebt=Math.max(0,G.techDebt-t.headcount*t.level*teamEff('devops')*.4);
   t.xp+=.3; if(t.xp>=t.xpMax){t.xp=0;t.xpMax=Math.floor(t.xpMax*1.6);t.level++;log(`DevOps Lv.${t.level}!`,'gr');}
 }
 function deliveryLoop() {
@@ -402,6 +404,7 @@ function analystLoop() {
       r.progress+=G.teams.analyst.headcount*G.teams.analyst.level*.4;
       if(r.progress>=r.at*10){
         r.analyzing=false; r.analyzed=true; r.accepted=true;
+        G.usedRequests.push(r.name);
         const effort=r.at*10+Math.floor(Math.random()*20);
         if(r.good){
           G.reputation+=3;
@@ -417,9 +420,9 @@ function analystLoop() {
       }
     }
   });
-  // Trim processed requests so the array doesn't grow forever — keep pending + last 5 done
+  // Keep pending + last 3 analyzed (for display only) — usedRequests blocks permanent recycling
   const pend=G.featureRequests.filter(r=>r.accepted===null);
-  const done=G.featureRequests.filter(r=>r.accepted!==null).slice(-5);
+  const done=G.featureRequests.filter(r=>r.accepted!==null).slice(-3);
   if(pend.length+done.length<G.featureRequests.length) G.featureRequests=[...pend,...done];
   G.teams.analyst.xp+=.2; const at=G.teams.analyst; if(at.xp>=at.xpMax){at.xp=0;at.xpMax=Math.floor(at.xpMax*1.6);at.level++;log(`Analyst Lv.${at.level}!`,'gr');}
 }
@@ -439,7 +442,7 @@ function churnLoop() {
   G.customers = G.customers.filter(c=>{
     c.age++;
     const openTkts=G.tickets.filter(t=>!t.resolved&&t.customer===c.name).length;
-    c.satisfaction = Math.max(0,Math.min(100,c.satisfaction-openTkts*.8-G.techDebt*.03));
+    c.satisfaction = Math.max(0,Math.min(100,c.satisfaction-openTkts*1.0-G.techDebt*.05));
     const isTrial=c.tier.id.startsWith('t');
     const churn=isTrial?.04:c.satisfaction<20?.02:c.satisfaction<40?.005:0;
     if (Math.random()<churn) {
@@ -460,8 +463,8 @@ function churnLoop() {
 function resourcesLoop() {
   G.reputation=Math.max(0,Math.min(100,G.reputation));
   G.morale=Math.max(0,Math.min(100,G.morale));
-  if (G.tick%25===0) G.techDebt+=.5;
-  if (G.tick%60===0&&G.morale<85) G.morale+=1;
+  if (G.tick%25===0) G.techDebt+=.8;
+  if (G.tick%80===0&&G.morale<80) G.morale+=1;
 }
 function ticketGenLoop() {
   if (G.customers.length&&Math.random()<.006*G.customers.length) genTicket();
@@ -470,7 +473,7 @@ function featureReqLoop() {
   const pending=G.featureRequests.filter(r=>r.accepted===null);
   if (G.customers.length<2||pending.length>=10) return;
   if (Math.random()<.004*G.customers.length) {
-    const pool=REQ_POOL.filter(r=>!pending.find(x=>x.name===r.name));
+    const pool=REQ_POOL.filter(r=>!G.usedRequests.includes(r.name)&&!pend.find(x=>x.name===r.name));
     if (!pool.length) return;
     const r={...pool[Math.floor(Math.random()*pool.length)],analyzed:false,analyzing:false,accepted:null,progress:0};
     G.featureRequests.unshift(r); G.notifCount++;
@@ -1025,9 +1028,10 @@ function updateTicker() {
 
 // ─── WIN CHECK ─────────────────────────────────────────────
 function checkWin() {
+  if (G.won) return;
   if (DEV_Q.every(f=>f.done)&&G.customers.length>=15&&Object.values(G.regions).every(r=>r.active)) {
+    G.won=true;
     const ws=document.getElementById('win-screen');
-    if(ws.classList.contains('show')) return;
     ws.classList.add('show');
     document.getElementById('win-stats').textContent=`MRR: €${FMT(calcMRR())} | Customers: ${G.customers.length} | Regions: 4/4 | Cash: €${FMT(G.cash)}`;
   }
@@ -1051,7 +1055,7 @@ function gameLoop() {
   renderTopbar(); renderHome(); updBadges();
   if(G.currentView==='customers') renderCustomers();
   if(G.currentView==='teams')     renderTeams();
-  if(G.currentView==='features')  renderFeatures();
+  if(G.currentView==='features')  { renderFeatures(); renderRequests(); }
   if(G.currentView==='marketing') renderMarketing();
   if(G.currentView==='leadership')renderLeadership();
   if(G.currentView==='reports')   renderReports();
@@ -1078,6 +1082,7 @@ function saveGame() {
       docsProcessed:G.docsProcessed, featuresShipped:G.featuresShipped, deployments:G.deployments,
       ticketsResolved:G.ticketsResolved, addonsSold:G.addonsSold,
       customers:G.customers, tickets:G.tickets, featureRequests:G.featureRequests,
+      usedRequests:G.usedRequests, won:G.won,
       lastEventTick:G.lastEventTick, lastCrisisTick:G.lastCrisisTick,
       teams:JSON.parse(JSON.stringify(G.teams)), regions:JSON.parse(JSON.stringify(G.regions)),
       devProgress:G.devProgress, mktCooldown:G.mktCooldown, currentView:G.currentView,
@@ -1118,6 +1123,8 @@ function loadGame() {
     G.customers=state.customers;
     G.tickets=state.tickets;
     G.featureRequests=state.featureRequests;
+    G.usedRequests=state.usedRequests||[];
+    G.won=state.won||false;
     G.lastEventTick=state.lastEventTick;
     G.lastCrisisTick=state.lastCrisisTick;
     G.devProgress=state.devProgress;
@@ -1194,6 +1201,7 @@ setInterval(()=>{
         docsProcessed:G.docsProcessed, featuresShipped:G.featuresShipped, deployments:G.deployments,
         ticketsResolved:G.ticketsResolved, addonsSold:G.addonsSold,
         customers:G.customers, tickets:G.tickets, featureRequests:G.featureRequests,
+        usedRequests:G.usedRequests, won:G.won,
         lastEventTick:G.lastEventTick, lastCrisisTick:G.lastCrisisTick,
         teams:JSON.parse(JSON.stringify(G.teams)), regions:JSON.parse(JSON.stringify(G.regions)),
         devProgress:G.devProgress, mktCooldown:G.mktCooldown, currentView:G.currentView,

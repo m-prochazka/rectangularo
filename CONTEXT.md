@@ -1,6 +1,6 @@
 # RECTANGULARO — Project Context
 > Drop this file in your project root and paste it to any Claude instance to resume with zero re-explaining.
-> Last updated: v3.0 — February 2026
+> Last updated: v3.5 — February 2026
 
 ---
 
@@ -119,14 +119,19 @@ Core features in order:
 Analyst-accepted feature requests are appended to DEV_Q after the 15 core items. **Win condition checks all items in DEV_Q** (including analyst additions).
 
 ### Add-on Store (5 categories, 15 addons)
-Addons unlock when the corresponding feature ships. Selling an addon: charges one-time price + adds monthly rev to a random customer.
+Addons unlock when the corresponding feature ships. **The sales team automatically pitches and sells unlocked addons** — no manual action required. Each time the sales loop cycle fires, there is a 40% chance of selling a randomly chosen unlocked addon to a random eligible customer (one that doesn't have it yet). One-time price charged on sale, monthly `rev` added to customer MRR.
+
+The addon store view shows status:
+- `🔒 Ship to unlock` — feature not yet shipped by dev
+- `📞 Sales pitching` — unlocked, at least one customer is eligible
+- `✓ All customers covered` — every customer has this addon
 
 | Category | Addons |
 |----------|--------|
 | Brand & Identity | Custom Branding €149+/mo, Custom Email Identity €49+/mo, Custom Domain €99+/mo |
 | Advanced Security | eSealing €199+/mo, SAML/SSO €299+/mo, Qualified Timestamps €99+/mo |
 | Customization | Custom Signing Cert €299+/mo, Custom Workflows €349+/mo, Advanced Reporting €99+/mo |
-| Enterprise | On-Premise License €4,999 (one-time), REST API €299+/mo, Audit Trail Pro €149+/mo |
+| Enterprise | On-Premise License €4,999 (one-time, no monthly rev), REST API €299+/mo, Audit Trail Pro €149+/mo |
 | Integrations | MS Office 365 €99+/mo, E-Signature SDK €199+/mo, Mobile SDK €249+/mo |
 
 Custom Domain unlocks via ISO 27001 upgrade (not a dev feature).
@@ -242,8 +247,9 @@ const SUPPORT_EVENTS = [...]      // Kate, Michael Stroll
 const MARKETING_EVENTS = [...]    // Luke O, Sharky
 const DEV_EVENTS = [...]          // Luke Hail, Wes Wonder — backend/frontend disasters
 const TOOLS_EVENTS = [...]        // Jira, Confluence, Odoo chaos — various characters
+const ANDRE_EVENTS = [...]        // Andre COO fighting Joe/Theresa/Lucas — the good guy
 
-const ALL_EVENTS = [...CEO_EVENTS, ...LEADERSHIP_EVENTS, ...]  // 44 total, randomly triggered
+const ALL_EVENTS = [...CEO_EVENTS, ...LEADERSHIP_EVENTS, ...]  // 53 total, randomly triggered
 
 const THRESHOLD_EVENTS = { ... }  // 4 events, triggered by metric thresholds (NOT in ALL_EVENTS)
 ```
@@ -266,7 +272,7 @@ const THRESHOLD_EVENTS = { ... }  // 4 events, triggered by metric thresholds (N
 }
 ```
 
-### Current events (44 random + 4 threshold = 48 total)
+### Current events (53 random + 4 threshold = 57 total)
 **CEO Events (5):** AI LinkedIn decree, Lucas promised a non-existent feature, VC demo, SignMaster 3000 competitor, SaaStock conference promises
 
 **Leadership Events (7):** Andre's RTO mandate, Theresa cancels Christmas party, Terry approves vacations nobody asked for, Terry creates "Feelings Anonymous" Slack channel, Dave's tech debt crisis, Barb's 40-slide "No" deck, Sarah finds 14 bugs (Dave says 3 are features)
@@ -279,7 +285,9 @@ const THRESHOLD_EVENTS = { ... }  // 4 events, triggered by metric thresholds (N
 
 **Dev Events (9):** Luke Hail — backend is a 47-tab Excel file, no staging (only production), auth is `email.includes('@')`, zero DB indexes, Pavel's 2019 TODO comment, Pavel's Ghost (DB in ex-employee's Docker), Wes Wonder — 18K-line CSS with `.thing`, jQuery triple-stacked on React, z-index disaster (47 values above 9000), aggressive button complaint
 
-**Tools Events (9):** Joe creates 63 undescribed Jira tickets (all CRITICAL), 340 In Progress tickets / fake velocity, someone sets all story points to 1, Terry discovers Confluence (documents the feelings), Andre's architecture doc says TBD since 2021, Confluence onboarding loop, Theresa moves everything to Odoo, Odoo sends invoices to wrong customers, Joe's Blockchain Epic (0 user stories), Andre's 4-word Operational Excellence Framework
+**Tools Events (10):** Joe creates 63 undescribed Jira tickets (all CRITICAL), 340 In Progress tickets / fake velocity, someone sets all story points to 1, Terry discovers Confluence (documents the feelings), Andre's architecture doc says TBD since 2021, Confluence onboarding loop, Andre's 4-word Operational Excellence Framework, Theresa moves everything to Odoo, Odoo sends invoices to wrong customers, Joe's Blockchain Epic (0 user stories)
+
+**Andre COO Events (9):** Sprint lockdown (Andre locks sprint after Joe adds tickets at 11pm), Sales intervention (André calls Lucas's client to walk back an impossible ERP promise), CFO standoff (blocks Theresa from dissolving QA), Conference ambush (Joe volunteered dev for live coding demo without telling anyone), Budget war (6-week fight with Theresa for €12K tooling budget), CEO AI decree (Joe announces "AI-first pivot" on LinkedIn at 11pm), Contract cleanup (Andre quietly rewrites 7 Lucas contracts with "unlimited custom development"), The quiet win (Andre silently blocks Joe's mandatory 7am daily culture standup), Hiring freeze (Andre wins 1 approved hire; Joe immediately posts 6 roles on LinkedIn)
 
 **Threshold Events (4, metric-triggered):**
 - Tech Debt Crisis (debt > 100): Dave emergency refactor
@@ -305,20 +313,35 @@ Threshold events have a 3,000–5,000 tick cooldown before re-triggering.
 10. **No build tools** — pure vanilla HTML/CSS/JS, open in browser directly
 11. **Analyst auto-queue** — once Barb finishes analysis, feature goes straight to dev queue (no manual accept/reject). Good → Rep +3; Bad → Morale -10, Debt +10.
 12. **Save/load via localStorage** — autosaves every 30s while unpaused. Manual save/load/delete in Admin view. Note: dynamically added feature requests are not persisted in save (only the 15 core items' done-state is saved).
+13. **Addon auto-selling by sales team** — no manual SELL button. Sales team passively pitches unlocked addons each cycle (40% chance per sales loop completion). Addon store shows live status per addon.
+14. **Andre as the "good COO"** — 9 dedicated events where Andre acts as the competent pragmatist fighting Joe's chaos, Theresa's cuts, and Lucas's impossible promises. Outcomes are always better when you side with Andre.
 
 ---
 
 ## Known Issues / TODO
 
+**Confirmed bugs:**
+- [x] **Analyst progress bar not updating live** — fixed v3.4: `renderRequests()` now runs alongside `renderFeatures()` in the game loop each frame.
+- [x] **Feature requests duplicating** — fixed v3.4: dedup in `featureReqLoop()` checks full `G.featureRequests` (not just pending), blocking same-name re-entry until it falls off the 5-slot done list.
+
+**Other issues:**
 - [ ] `Documents` view stats — wired in `renderTopbar()`, verify they update correctly in-game
 - [ ] Win condition checks `DEV_Q.every(f=>f.done)` — includes dynamically added analyst items, so player must also ship those to win
 - [ ] Feature requests added via analyst are not saved/restored by the save system (only original 15 tracked by index)
 - [ ] No sound effects
 - [ ] No achievements system
 - [x] Wes Wonder and Luke Hail have unique events (DEV_EVENTS array)
+- [x] Addons sold manually with SELL button → now auto-sold by sales team passively
+- [x] Andre Mochalatte has dedicated COO events (ANDRE_EVENTS, 9 events)
 - [ ] Lucas Cloakfield could have more sales-related events
 - [ ] Marketing campaigns don't affect reputation (only customer count)
 - [ ] Terry Stroll events could trigger more frequently (they're beloved)
+- [ ] Addon sell rate could scale with sales team level (currently flat 40% per cycle)
+- [x] Win screen appears multiple times after "Continue to grow" — fixed v3.5: `G.won` flag prevents re-triggering once win condition is met
+- [x] MRR too high vs burn — fixed v3.5: base infra €500→€700, +€20/customer scaling infra added to burn
+- [x] Tickets clear too fast with many support staff — fixed v3.5: support multiplier 0.9→0.55
+- [x] Morale/tech debt/reputation too easy to maintain — fixed v3.5: tech debt passive +0.8/25t (was +0.5), testing reduction 0.9→0.5, devops reduction 0.8→0.4, morale auto-heal every 80t cap 80 (was 60t cap 85), satisfaction debt penalty 0.03→0.05/tick
+- [x] Feature requests recycling after analysis — fixed v3.5: `G.usedRequests[]` permanently tracks analyzed names; once seen, a request never regenerates
 
 ---
 
@@ -414,4 +437,59 @@ Claude Code can read the files directly — you don't need to paste code. Just s
 
 ---
 
-*Built in a single claude.ai conversation, February 2026. Game based on Circularo.com.*
+---
+
+## Feature Backlog
+
+Planned features and improvements. Implement these in future sessions.
+
+### Gameplay / Balance
+- [ ] **Increase max customers** — current cap is 60, feels too low. Consider scaling cap with regions unlocked or upgrades purchased (e.g. 60 base, +30 per non-EU region active = 150 max with all regions).
+- [ ] **Progressive difficulty** — game should get harder the longer it runs. Ideas: ticket generation rate scales with tick count, churn rate increases past month 12, tech debt passive growth accelerates, events skew more negative over time, burn rate creep (infra costs scale with customers). Should feel like real startup scaling pressure.
+
+### Content
+- [ ] **More ticket templates** — `TKT_POOL` currently has ~15 entries. Add 20–30 more. Mix of: billing/invoice issues, GDPR data requests, "my signature doesn't look like me", enterprise compliance demands, API errors, mobile app crashes, white-label logo complaints, integration failures (MS365, Odoo), SLA breach warnings.
+- [ ] **More feature request templates** — `REQ_POOL` currently has 14 entries. Add 10–15 more. Mix of good/bad. Ideas: Zapier Integration (good), Physical Signature Notary (bad), "Add a Confetti Animation on Sign" (bad/fun), Webhook Support (good), Multi-language UI (good), "Make it Feel More Premium" (bad/vague), HIPAA Compliance Mode (good), Print & Sign Support (bad/anachronistic), 2FA / MFA (good), Salesforce CRM Integration (good).
+
+### Technical
+- [ ] **Save system for analyst-queued items** — dynamically added feature requests via analyst are lost on reload. Needs custom serialization since they have closures as `effect()` functions.
+- [ ] **Achievements system** — milestones: first customer, 10 customers, first region, ship all core features, 0 tech debt, etc.
+
+---
+
+## Changelog
+
+### v3.5 — February 2026
+- **No-recycle feature requests**: `G.usedRequests[]` added to state. Once a request is analyzed, its name is permanently recorded and never regenerates from `REQ_POOL`. Pool exhausts after all 14 entries are seen.
+- **Win screen fix**: `G.won` flag added. `checkWin()` sets it on first trigger and returns early on all subsequent calls — "Continue to grow" no longer re-shows the win screen.
+- **Balance — burn**: Base infra cost €500→€700. Added `+€20 × customers` scaling infra to `calcBurn()`. At 30 customers: +€1,300/mo extra total burn vs before.
+- **Balance — tech debt**: Passive growth +0.8 per 25 ticks (was +0.5, +60% faster). Testing debt reduction 0.9→0.5. DevOps debt reduction 0.8→0.4. Net effect: small teams barely hold debt steady; investment in testing/devops required to drive it down.
+- **Balance — morale**: Auto-heal now +1 every 80 ticks (was 60), cap 80 (was 85). Takes longer to recover from events and can't reach as high passively.
+- **Balance — satisfaction**: Tech debt satisfaction penalty per tick 0.03→0.05. Open ticket penalty 0.8→1.0 per ticket per tick. Customers lose faith faster when the product is buggy or understaffed.
+- **Balance — support**: Support team multiplier 0.9→0.55. Tickets take ~64% longer to resolve per headcount; large support teams no longer trivialize the ticket queue.
+- **Save/load**: `usedRequests` and `won` added to both manual save and autosave. Backwards-compatible with old saves (defaults to `[]` and `false`).
+
+### v3.4 — February 2026
+- **Bug fix — analyst bar**: `renderRequests()` added to the game loop render block alongside `renderFeatures()`. Analysis progress bar now updates live every frame while features view is open.
+- **Bug fix — request duplication**: `featureReqLoop()` dedup now checks all of `G.featureRequests` (not just pending items). Same-named request can't regenerate while an analyzed copy still exists in the 5-slot done list.
+
+### v3.3 — February 2026
+- **Andre COO events** (`ANDRE_EVENTS`, 9 events): Andre as the competent pragmatist fighting Joe (CEO), Theresa (CFO), and Lucas (Sales). Events: sprint lockdown, sales intervention, CFO standoff over QA, conference ambush, budget war, CEO AI decree, contract cleanup, the quiet win (7am standup blocked), hiring freeze aftermath.
+- **Addon auto-selling**: Removed manual SELL button from addon store. Sales team now automatically pitches unlocked addons each loop cycle (40% chance per completion). Addon view shows live status per addon: `🔒 Ship to unlock` / `📞 Sales pitching` / `✓ All customers covered`. Addon view added to main game loop render calls.
+- **Tools Events count corrected**: 10 events (not 9 as previously stated).
+- **Total events**: 53 random + 4 threshold = 57.
+
+### v3.2 — February 2026
+- **DEV_EVENTS** (9 events): Luke Hail backend disasters (47-tab Excel backend, no staging env, `email.includes('@')` auth, zero DB indexes, Pavel's 2019 TODOs, Pavel's Ghost DB in ex-employee Docker). Wes Wonder frontend chaos (18K-line CSS, jQuery triple-stacked on React, z-index >9000 disaster, aggressive button complaint).
+- **TOOLS_EVENTS** (10 events): Jira chaos (Joe's 63 CRITICAL tickets, 340 In Progress, story points all set to 1), Confluence chaos (Terry documents feelings, Andre's TBD architecture doc, onboarding loop, Andre's 4-word framework), Odoo chaos (Theresa moves everything to Odoo, wrong invoices bug, Joe's Blockchain Epic).
+- **Bug fix**: Feature requests stopped generating after auto-queue change. Root cause: cap check and pool dedup both operated on full `featureRequests` array (including processed items). Fixed to scope both to `pending` (accepted===null) only. Added array trim in `analystLoop()` to keep pending + last 5 done.
+
+### v3.1 — February 2026
+- **Analyst auto-queue**: Removed manual ACCEPT/REJECT buttons. `analystLoop()` now pushes directly to `DEV_Q` on analysis completion. Good requests: Rep +3. Bad requests: Morale -10, Debt +10, queued anyway. `acceptReq()` and `rejectReq()` functions deleted.
+
+### v3.0 — February 2026
+- Initial commit: full game engine, 9 teams, 18 characters, 15 core dev features, 15 addons, 12 upgrades, 4 regions, event system, save/load via localStorage, win condition, monthly P&L modal, ticket expiry system, marketing campaigns, customer satisfaction/churn, tech debt passive growth.
+
+---
+
+*Built in VS Code with Claude Code, February 2026. Game based on Circularo.com.*
